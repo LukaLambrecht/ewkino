@@ -37,7 +37,7 @@ def initializeJobScript( script ):
 
     #TO DO : make code to extract CMSSW directory in a general way
     #this is already available in DeepLearning repository, submodule would be a good solution 
-    current_CMSSW_version = 'CMSSW_10_2_20'
+    current_CMSSW_version = 'CMSSW_10_2_16_patch1'
     script.write('echo "Setting CMSSW version to '+current_CMSSW_version+'."\n')
     script.write('echo "To change the CMSSW version, go to ewkino/skimmer/jobSubmission.py"\n')
     script.write('source /cvmfs/cms.cern.ch/cmsset_default.sh\n')
