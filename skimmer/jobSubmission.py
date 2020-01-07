@@ -35,9 +35,11 @@ def submitQsubJob( script_name, wall_time = '24:00:00', num_threads = 1, high_me
 
 def initializeJobScript( script ):
 
-   	#TO DO : make code to extract CMSSW directory in a general way
+    #TO DO : make code to extract CMSSW directory in a general way
     #this is already available in DeepLearning repository, submodule would be a good solution 
     current_CMSSW_version = 'CMSSW_10_2_20'
+    script.write('echo "Setting CMSSW version to '+current_CMSSW_version+'."\n')
+    script.write('echo "To change the CMSSW version, go to ewkino/skimmer/jobSubmission.py"\n')
     script.write('source /cvmfs/cms.cern.ch/cmsset_default.sh\n')
     script.write('cd {}/src\n'.format( current_CMSSW_version ) )
     script.write('eval `scram runtime -sh`\n')

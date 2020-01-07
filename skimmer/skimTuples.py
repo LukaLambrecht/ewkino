@@ -37,17 +37,17 @@ if __name__ == '__main__' :
     #WARNING : it is assumed this script is run from the 'skimmer' directory
     current_directory = os.path.dirname( os.path.abspath( __file__ ) )
     
+    if len( sys.argv ) <= 4:
+        print( 'Error: skimTuples.py requires additional command-line arguments.' )
+        print( 'Usage: python skimTuples.py < input_directory > < ntuple_version > < output_directory > < skim_condition > < files_per_job > < wall_time >' )
+        print( 'files_per_job and wall_time have default values of 50 and 24:00:00' )
+        sys.exit()
     input_directory = sys.argv[1] 
     version_name = sys.argv[2] 
     output_directory_base = sys.argv[3] 
     skim_condition = sys.argv[4]
     files_per_job = int(sys.argv[5]) if len( sys.argv ) >= 6 else 50
     wall_time = sys.argv[6] if len( sys.argv ) >= 7 else '24:00:00' 
-    if len( sys.argv ) <= 4:
-        print( 'Error: skimTuples.py requires additional command-line arguments.' )
-        print( 'Usage: python skimTuples.py < input_directory > < ntuple_version > < output_directory > < skim_condition > < files_per_job > < wall_time >' )
-        print( 'files_per_job and wall_time have default values of 50 and 24:00:00' )
-        sys.exit()
     
     #make a list of samples (the main directories) and the subdirectories with the latest version of the ntuples ( one for each main directory )
     sample_directories = []
