@@ -185,7 +185,7 @@ SusyMassInfo& Event::susyMassInfo() const{
 }
 
 
-void Event::initializeZBosonCandidate(){
+void Event::initializeZBosonCandidate(bool sameSign){
     if( !ZIsInitialized ){
 
         //check that there are at least two leptons is performed automatically in LeptonCollection
@@ -195,7 +195,7 @@ void Event::initializeZBosonCandidate(){
         sortLeptonsByPt();
 
         //reconstruct the best Z boson
-        std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > ZBosonCandidateIndicesAndMass = _leptonCollectionPtr->bestZBosonCandidateIndicesAndMass();
+        std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > ZBosonCandidateIndicesAndMass = _leptonCollectionPtr->bestZBosonCandidateIndicesAndMass(sameSign);
         _bestZBosonCandidateIndices = ZBosonCandidateIndicesAndMass.first;
         _bestZBosonCandidateMass = ZBosonCandidateIndicesAndMass.second;
 
@@ -214,27 +214,27 @@ void Event::initializeZBosonCandidate(){
 }
 
 
-std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > Event::bestZBosonCandidateIndicesAndMass(){
-    initializeZBosonCandidate();    
+std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > Event::bestZBosonCandidateIndicesAndMass(bool sameSign){
+    initializeZBosonCandidate(sameSign);    
     return { _bestZBosonCandidateIndices, _bestZBosonCandidateMass };
 }
 
 
-std::pair< LeptonCollection::size_type, LeptonCollection::size_type > Event::bestZBosonCandidateIndices(){
-    initializeZBosonCandidate();
+std::pair< LeptonCollection::size_type, LeptonCollection::size_type > Event::bestZBosonCandidateIndices(bool sameSign){
+    initializeZBosonCandidate(sameSign);
     return _bestZBosonCandidateIndices;
 }
 
 
-double Event::bestZBosonCandidateMass(){
-    initializeZBosonCandidate();
+double Event::bestZBosonCandidateMass(bool sameSign){
+    initializeZBosonCandidate(sameSign);
     return _bestZBosonCandidateMass;
 }
 
 
-bool Event::hasZTollCandidate( const double oneSidedMassWindow ){
-    initializeZBosonCandidate();
-    return ( fabs( bestZBosonCandidateMass() - particle::mZ ) < oneSidedMassWindow );
+bool Event::hasZTollCandidate( const double oneSidedMassWindow, bool sameSign){
+    initializeZBosonCandidate(sameSign);
+    return ( fabs( bestZBosonCandidateMass(sameSign) - particle::mZ ) < oneSidedMassWindow );
 }
 
 

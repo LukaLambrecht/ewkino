@@ -171,10 +171,10 @@ class Event{
 
 
         //presence of a Z boson
-        double bestZBosonCandidateMass();
-        std::pair< LeptonCollection::size_type, LeptonCollection::size_type > bestZBosonCandidateIndices();
-        std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > bestZBosonCandidateIndicesAndMass();
-        bool hasZTollCandidate( const double oneSidedMassWindow );
+        double bestZBosonCandidateMass(bool sameSign = false);
+        std::pair< LeptonCollection::size_type, LeptonCollection::size_type > bestZBosonCandidateIndices(bool sameSign = false);
+        std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > bestZBosonCandidateIndicesAndMass(bool sameSign = false);
+        bool hasZTollCandidate( const double oneSidedMassWindow, bool sameSign = false );
 
         //transverse mass of lepton from W decay in 1 or 3 lepton events and the MET
         LeptonCollection::size_type WLeptonIndex();
@@ -249,7 +249,7 @@ class Event{
         std::pair< LeptonCollection::size_type, LeptonCollection::size_type > _bestZBosonCandidateIndices;
         LeptonCollection::size_type _WLeptonIndex = 0;
         double _bestZBosonCandidateMass;
-        void initializeZBosonCandidate();
+        void initializeZBosonCandidate(bool sameSign = false);
         
         //always make sure lepton collection is sorted before selecting Z candidates 
         //WARNING : make sure this is robust when cone-correction is applied!

@@ -339,10 +339,10 @@ LeptonCollection::size_type LeptonCollection::numberOfUniqueOSPairs() const{
 }
 
 
-std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > LeptonCollection::bestZBosonCandidateIndicesAndMass() const{
+std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >, double > LeptonCollection::bestZBosonCandidateIndicesAndMass(bool sameSign) const{
 
-    //currently the code only works when an OSSF pair is present 
-    if( !hasLightOSSFPair() ){
+    //now also accepts same sign
+    if( !hasLightOSSFPair() && sameSign == false){
         throw std::domain_error( "Finding the best leptonic Z decay candidate is only defined when two light leptons of opposite sign and same flavor are present in the event." );
     }
 
@@ -358,7 +358,7 @@ std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >
         if( l1.isTau() ) continue;
         for( const_iterator l2It = l1It + 1; l2It != cend(); ++l2It ){
             Lepton& l2 = **l2It; 
-            if( !oppositeSignSameFlavor( l1, l2 ) ) continue;
+            if( !oppositeSignSameFlavor( l1, l2 ) && sameSign == false) continue;
 
             double mass = ( l1 + l2 ).mass();
             double massDifference = std::abs( mass - particle::mZ );
@@ -374,13 +374,13 @@ std::pair< std::pair< LeptonCollection::size_type, LeptonCollection::size_type >
 }
 
 
-std::pair< LeptonCollection::size_type, LeptonCollection::size_type > LeptonCollection::bestZBosonCandidateIndices() const{
-    return bestZBosonCandidateIndicesAndMass().first;
+std::pair< LeptonCollection::size_type, LeptonCollection::size_type > LeptonCollection::bestZBosonCandidateIndices(bool sameSign) const{
+    return bestZBosonCandidateIndicesAndMass(sameSign).first;
 }
 
 
-double LeptonCollection::bestZBosonCandidateMass() const{
-    return bestZBosonCandidateIndicesAndMass().second;
+double LeptonCollection::bestZBosonCandidateMass(bool sameSign) const{
+    return bestZBosonCandidateIndicesAndMass(sameSign).second;
 }
 
 
