@@ -242,9 +242,10 @@ bool passMllMassVeto( const Event& event ){
 
 bool pass_signalregion_dilepton(Event& event, const std::string& selectiontype,
                                 const std::string& variation, const bool selectbjets){
-    cleanLeptonsAndJets(event);
+    cleanLeptonsAndJets(event);//this already cleans the leptons from eachother as well with R=0.4
     // apply trigger and pt thresholds
     if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
     if(not passAnyTrigger(event)) return false;
     if(!hasnFOLeptons(event,2,true)) return false;
     if(not passDileptonPtThresholds(event)) return false;
@@ -255,6 +256,10 @@ bool pass_signalregion_dilepton(Event& event, const std::string& selectiontype,
     } else return false;
     // chargemisId Z candidate veto
     if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
+    // invariant mass safety
+    if(not passMllMassVeto(event)) return false;
+    //needs to be same sign
+    if( !event.leptonsAreSameSign()) return false;
     // number of jets and b-jets
     std::pair<int,int> njetsnloosebjets = nJetsNLooseBJets(event, variation);
     std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
@@ -270,6 +275,7 @@ bool pass_signalregion_trilepton(Event& event, const std::string& selectiontype,
     cleanLeptonsAndJets(event);
     // apply trigger and pt thresholds
     if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
     if(not passAnyTrigger(event)) return false;
     if(!hasnFOLeptons(event,3,true)) return false;
     if(not passLeptonPtThresholds(event)) return false;
@@ -288,6 +294,8 @@ bool pass_signalregion_trilepton(Event& event, const std::string& selectiontype,
     if( event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow) ) return false;
     // invariant mass safety
     if(not passMllMassVeto(event)) return false;
+    //needs to be charge 1 or -1 in total
+    if( !event.hasOSLeptonPair()) return false;
     // number of jets and b-jets                                           
     std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
     if( njetsnbjets.second < 1 ) return false;
@@ -307,6 +315,7 @@ bool pass_controlregion_trilepton(Event& event, const std::string& selectiontype
     cleanLeptonsAndJets(event);
     // apply trigger and pt thresholds
     if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
     if(not passAnyTrigger(event)) return false;
     if(!hasnFOLeptons(event,3,true)) return false;
     if(not passLeptonPtThresholds(event)) return false;
@@ -331,7 +340,11 @@ bool pass_controlregion_trilepton(Event& event, const std::string& selectiontype
     } else return false;
     // inverted Z candidate veto
     if( event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow) ) return false;
-    // number of jets and b-jets                                           => not used in Tu Thong analysis
+    // invariant mass safety
+    if(not passMllMassVeto(event)) return false;
+    //needs to be charge 1 or -1 in total
+    if( !event.hasOSLeptonPair()) return false;
+    // number of jets and b-jets                                           => not used in Tu Thong control region
     //
     if(variation=="dummy") return true; // dummy to avoid unused parameter warning
     if(selectbjets){} // dummy to avoid unused parameter warning
@@ -642,13 +655,15 @@ bool pass_nonprompt_dilepton_invMET(
     return true;
 }
 
-
+//for DY Z->ee
 bool pass_chargeMisId_dilepton(
             Event& event,
             const std::string& selectiontype,
             const std::string& variation,
             const bool selectbjets){
     cleanLeptonsAndJets(event);
+    //only want electrons (muon chargemisid negligible)
+    if(event.leptonCollection()[0].isMuon() || event.leptonCollection()[1].isMuon()) return false;
     // apply trigger and pt thresholds
     if(not event.passMetFilters()) return false;
     if(not passAnyTrigger(event)) return false;
