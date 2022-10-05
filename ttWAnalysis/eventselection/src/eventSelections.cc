@@ -23,6 +23,7 @@ bool passES(Event& event, const std::string& eventselection,
     static std::map< std::string, std::function< 
 	bool(Event&, const std::string&, const std::string&, const bool) > > 
 	    ESFunctionMap = {
+		{ "signalregion_dilepton", pass_signalregion_dilepton },
 		{ "signalregion_trilepton", pass_signalregion_trilepton },
 		{ "wzcontrolregion", pass_wzcontrolregion },
 		{ "zzcontrolregion", pass_zzcontrolregion },
@@ -252,13 +253,11 @@ bool pass_signalregion_dilepton(Event& event, const std::string& selectiontype,
     if(selectiontype=="tight"){
         if(!hasnTightLeptons(event, 2, true)) return false;
     } else return false;
-    // Z candidate veto
-    if( event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
-    // HT cut
-    if( event.jetCollection().scalarPtSum()<300 ) return false;
+    // chargemisId Z candidate veto
+    if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
     // number of jets and b-jets
     std::pair<int,int> njetsnloosebjets = nJetsNLooseBJets(event, variation);
-    std::pair<int,int> njetsnbjets = nJetsNLooseBJets(event, variation);
+    std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
     if( njetsnbjets.second < 1 && njetsnloosebjets.second < 2 ) return false;
     if( njetsnbjets.first < 2 ) return false;
     if(variation=="dummy") return true; // dummy to avoid unused parameter warning
@@ -287,12 +286,12 @@ bool pass_signalregion_trilepton(Event& event, const std::string& selectiontype,
     } else return false;
     // Z candidate veto
     if( event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow) ) return false;
-    // HT cut
-    if( event.jetCollection().scalarPtSum()<300 ) return false;
-    // number of jets and b-jets                                           => not used in Tu Thong analysis
-    //std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
-    //if( njetsnbjets.second < 1 ) return false;
-    //if( njetsnbjets.first < 2 ) return false;
+    // invariant mass safety
+    if(not passMllMassVeto(event)) return false;
+    // number of jets and b-jets                                           
+    std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
+    if( njetsnbjets.second < 1 ) return false;
+    if( njetsnbjets.first < 2 ) return false;
     if(variation=="dummy") return true; // dummy to avoid unused parameter warning
     if(selectbjets){} // dummy to avoid unused parameter warning
     return true; 
@@ -301,6 +300,45 @@ bool pass_signalregion_trilepton(Event& event, const std::string& selectiontype,
 // -----------------------
 // prompt control regions 
 //------------------------
+
+//trilepton with inverted Z veto and no jet requirements
+bool pass_controlregion_trilepton(Event& event, const std::string& selectiontype,
+                                const std::string& variation, const bool selectbjets){
+    cleanLeptonsAndJets(event);
+    // apply trigger and pt thresholds
+    if(not event.passMetFilters()) return false;
+    if(not passAnyTrigger(event)) return false;
+    if(!hasnFOLeptons(event,3,true)) return false;
+    if(not passLeptonPtThresholds(event)) return false;
+    if(not passPhotonOverlapRemoval(event)) return false;       
+    // do lepton selection for different types of selections
+    if(selectiontype=="tight"){
+        if(!hasnTightLeptons(event, 3, true)) return false;
+    } else if(selectiontype=="prompt"){
+        if(!hasnTightLeptons(event, 3, true)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+        if(hasnTightLeptons(event, 3, false)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;    if(selectiontype=="tight"){
+        if(!hasnTightLeptons(event, 3, true)) return false;
+    } else if(selectiontype=="prompt"){
+        if(!hasnTightLeptons(event, 3, true)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+        if(hasnTightLeptons(event, 3, false)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;
+    // inverted Z candidate veto
+    if( event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow) ) return false;
+    // number of jets and b-jets                                           => not used in Tu Thong analysis
+    //
+    if(variation=="dummy") return true; // dummy to avoid unused parameter warning
+    if(selectbjets){} // dummy to avoid unused parameter warning
+    return true;
+
+}
+
 
 bool pass_wzcontrolregion(Event& event, const std::string& selectiontype,
 				const std::string& variation, const bool selectbjets){

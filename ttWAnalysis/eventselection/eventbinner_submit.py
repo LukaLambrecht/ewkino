@@ -6,7 +6,7 @@ import os
 import sys
 
 regions = []
-for r in ['signalregion_trilepton']: regions.append(r)
+for r in ['signalregion_dilepton','signalregion_trilepton']: regions.append(r)
 for r in ['wzcontrolregion','zzcontrolregion','zgcontrolregion']: regions.append(r)
 for r in ['nonprompt_trilepton_noossf','nonprompt_trilepton_noz']: regions.append(r)
 for r in ['nonprompt_trilepton']: regions.append(r)
@@ -18,8 +18,8 @@ dtypes = ['sim','data']
 
 selection_types = []
 selection_types.append('tight')
-selection_types.append('prompt')
-selection_types.append('fakerate')
+#selection_types.append('prompt')
+#selection_types.append('fakerate')
 
 variations = []
 variations.append('nominal')
@@ -43,7 +43,7 @@ for year in years:
         inputdiryear = '2016'
     inputdir = os.path.join(inputdir, inputdiryear)
     samplelist = os.path.join(samplelistdir,samplelistbase.format(year,dtype))
-    outputdir = 'output_20220922'
+    outputdir = 'output_test2'
     outputdir = os.path.join(outputdir, '{}_{}'.format(year,dtype))
     cmd = 'python eventbinner.py'
     cmd += ' --inputdir ' + inputdir

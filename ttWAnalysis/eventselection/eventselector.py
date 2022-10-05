@@ -15,7 +15,7 @@ from samplelisttools import readsamplelist
 
 # fixed settings
 event_selections = (['wzcontrolregion','zzcontrolregion','zgcontrolregion',
-                     'signalregion_trilepton',
+                     'signalregion_dilepton','signalregion_trilepton',
                      'nonprompt_trilepton_noossf', 'nonprompt_trilepton_noz',
                      'nonprompt_trilepton', 'nonprompt_dilepton'])
 selection_types = ['tight','prompt','fakerate','2tight']
