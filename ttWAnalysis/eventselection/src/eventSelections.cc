@@ -253,6 +253,12 @@ bool pass_signalregion_dilepton(Event& event, const std::string& selectiontype,
     // do lepton selection for different types of selections
     if(selectiontype=="tight"){
         if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+        if(!hasnTightLeptons(event, 2, true)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+        if(hasnTightLeptons(event, 2, false)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
     } else return false;
     // chargemisId Z candidate veto
     if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
@@ -639,6 +645,12 @@ bool pass_nonprompt_dilepton_invMET(
     // do lepton selection for different types of selections
     if(selectiontype=="tight"){
     if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+        if(!hasnTightLeptons(event, 2, true)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+        if(hasnTightLeptons(event, 2, false)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
     } else return false;
     // Z candidate veto
     if( event.hasZTollCandidate(halfwindow_dilep) ) return false;
@@ -671,6 +683,12 @@ bool pass_chargeMisId_dilepton(
     event.sortLeptonsByPt();
     if(selectiontype=="tight"){
         if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+        if(!hasnTightLeptons(event, 2, true)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+        if(hasnTightLeptons(event, 2, false)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
     } else return false;
     // leptons can be charge misidentified so this can be used to study charge misId
     //if(event.leptonsAreSameSign()) return false;
@@ -678,3 +696,37 @@ bool pass_chargeMisId_dilepton(
     if(fabs((event.leptonCollection()[0]+event.leptonCollection()[1]).mass()-particle::mZ) > 15. ) return false;
     return true;
 }
+
+
+//4lep control region
+bool pass_4lepton(
+            Event& event,
+            const std::string& selectiontype,
+            const std::string& variation,
+            const bool selectbjets){
+    cleanLeptonsAndJets(event);
+    // apply trigger and pt thresholds
+    if(not event.passMetFilters()) return false;
+    if(not passAnyTrigger(event)) return false;
+    if(!hasnFOLeptons(event, 4, true)) return false;
+    event.sortLeptonsByPt();
+    if(event.leptonCollection()[0].pt() < 25.
+        || event.leptonCollection()[1].pt() < 15.
+        || event.leptonCollection()[2].pt() < 15.
+        || event.leptonCollection()[3].pt() < 10. ) return false;
+    if(not passPhotonOverlapRemoval(event)) return false;
+    // do lepton selection for different types of selections
+    if(selectiontype=="tight"){
+        if(!hasnTightLeptons(event, 4, true)) return false;
+    } else if(selectiontype=="prompt"){
+        if(!hasnTightLeptons(event, 4, true)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+        if(hasnTightLeptons(event, 4, false)) return false;
+        if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;
+    // require presence of OSSF pair
+    if(!event.hasOSSFLightLeptonPair()) return false;
+    if(!event.hasZTollCandidate(halfwindow)) return false;
+    return true;
+}     
