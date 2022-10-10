@@ -271,13 +271,17 @@ std::map< std::string, double > eventFlattening::eventToEntry(Event& event,
     varmap["_nElectrons"] = lepcollection.numberOfElectrons();
 
     // lepton pt and eta
-    if(lepcollection.numberOfLightLeptons()==3 && lepcollection.size()==3){
+    if(lepcollection.numberOfLightLeptons()>=1 && lepcollection.size()>=1){
 	varmap["_leptonPtLeading"] = lepcollection[0].pt();
+        varmap["_leptonEtaLeading"] = lepcollection[0].eta();
+    }
+    if(lepcollection.numberOfLightLeptons()>=2 && lepcollection.size()>=2){
 	varmap["_leptonPtSubLeading"] = lepcollection[1].pt();
-	varmap["_leptonPtTrailing"] = lepcollection[2].pt();
-	varmap["_leptonEtaLeading"] = lepcollection[0].eta();
         varmap["_leptonEtaSubLeading"] = lepcollection[1].eta();
-        varmap["_leptonEtaTrailing"] = lepcollection[2].eta();
+    }
+    if(lepcollection.numberOfLightLeptons()>=3 && lepcollection.size()>=3){
+	varmap["_leptonPtTrailing"] = lepcollection[2].pt();
+	varmap["_leptonEtaTrailing"] = lepcollection[2].eta();
     }
     // jet pt
     jetcollection.sortByPt();

@@ -11,7 +11,7 @@ topdir = sys.argv[1]
 
 years = ['2016PreVFP', '2016PostVFP', '2017', '2018']
 
-npmodes = ['npfromsim']
+npmodes = ['npfromsim', 'npfromdata']
 
 rename = 'processes/rename_processes_tttt.json'
 

@@ -24,6 +24,10 @@ bool passES(Event& event, const std::string& eventselection,
 	bool(Event&, const std::string&, const std::string&, const bool) > > 
 	    ESFunctionMap = {
 		{ "signalregion_dilepton", pass_signalregion_dilepton },
+                { "signalregion_dimuon", pass_signalregion_dimuon },
+                { "signalregion_dielectron", pass_signalregion_dielectron },
+                { "signalregion_dilepton_me", pass_signalregion_dilepton_me },
+                { "signalregion_dilepton_em", pass_signalregion_dilepton_em },
 		{ "signalregion_trilepton", pass_signalregion_trilepton },
 		{ "wzcontrolregion", pass_wzcontrolregion },
 		{ "zzcontrolregion", pass_zzcontrolregion },
@@ -31,7 +35,10 @@ bool passES(Event& event, const std::string& eventselection,
 		{ "nonprompt_trilepton_noossf", pass_nonprompt_trilepton_noossf },
 		{ "nonprompt_trilepton_noz", pass_nonprompt_trilepton_noz },
 		{ "nonprompt_trilepton", pass_nonprompt_trilepton },
-		{ "nonprompt_dilepton", pass_nonprompt_dilepton }
+		{ "nonprompt_dilepton", pass_nonprompt_dilepton },
+                { "4lepton_controlregion", pass_4lepton_controlregion },
+                { "chargeMisId_dilepton", pass_chargeMisId_dilepton },
+                { "nonprompt_dilepton_invMET", pass_nonprompt_dilepton_invMET }
 	    };
     auto it = ESFunctionMap.find( eventselection );
     if( it == ESFunctionMap.cend() ){
@@ -699,7 +706,7 @@ bool pass_chargeMisId_dilepton(
 
 
 //4lep control region
-bool pass_4lepton(
+bool pass_4lepton_controlregion(
             Event& event,
             const std::string& selectiontype,
             const std::string& variation,
@@ -729,4 +736,162 @@ bool pass_4lepton(
     if(!event.hasOSSFLightLeptonPair()) return false;
     if(!event.hasZTollCandidate(halfwindow)) return false;
     return true;
-}     
+}
+
+
+//=======================//
+//splitted signal regions//
+//=======================//
+
+bool pass_signalregion_dimuon(Event& event, const std::string& selectiontype,
+                                const std::string& variation, const bool selectbjets){
+    cleanLeptonsAndJets(event);//this already cleans the leptons from eachother as well with R=0.4
+    //apply trigger and pt thresholds and require muons
+    if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
+    if(not passAnyTrigger(event)) return false;
+    if(!hasnFOLeptons(event,2,true)) return false;
+    if(not passDileptonPtThresholds(event)) return false;
+    if(not passPhotonOverlapRemoval(event)) return false;
+    if(!event.leptonCollection()[0].isMuon() || !event.leptonCollection()[1].isMuon()) return false; 
+    //do lepton selection for different types of selections
+    if(selectiontype=="tight"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+    if(hasnTightLeptons(event, 2, false)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;
+    // chargemisId Z candidate veto
+    if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
+    // low mass veto
+    if(not passMllMassVeto(event)) return false;
+    // require SS to diminish DY Zs
+    if( !event.leptonsAreSameSign()) return false;
+    //require jet stuff
+    std::pair<int,int> njetsnloosebjets = nJetsNLooseBJets(event, variation);
+    std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
+    if( njetsnbjets.second < 1 && njetsnloosebjets.second < 2 ) return false;
+    if( njetsnbjets.first < 2 ) return false;
+    if(variation=="dummy") return true;
+    if(selectbjets){}
+    return true;
+    }
+
+bool pass_signalregion_dielectron(Event& event, const std::string& selectiontype,
+                                const std::string& variation, const bool selectbjets){
+    cleanLeptonsAndJets(event);// this already cleans the leptons from eachother as well with R=0.4
+    //apply trigger and pt thresholds and require electrons
+    if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
+    if(not passAnyTrigger(event)) return false;
+    if(!hasnFOLeptons(event,2,true)) return false;
+    if(not passDileptonPtThresholds(event)) return false;
+    if(not passPhotonOverlapRemoval(event)) return false;
+    if(event.leptonCollection()[0].isMuon() || event.leptonCollection()[1].isMuon()) return false;
+    //do lepton selection for different types of selections
+    if(selectiontype=="tight"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+    if(hasnTightLeptons(event, 2, false)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;
+    //chargemisId Z candidate veto
+    if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
+    //low mass veto
+    if(not passMllMassVeto(event)) return false;
+    //require SS to diminish DY Zs
+    if( !event.leptonsAreSameSign()) return false;
+    //require jet stuff
+    std::pair<int,int> njetsnloosebjets = nJetsNLooseBJets(event, variation);
+    std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
+    if( njetsnbjets.second < 1 && njetsnloosebjets.second < 2 ) return false;
+    if( njetsnbjets.first < 2 ) return false;
+    if(variation=="dummy") return true;
+    if(selectbjets){}
+    return true;
+    }
+
+
+
+
+bool pass_signalregion_dilepton_me(Event& event, const std::string& selectiontype,
+                                const std::string& variation, const bool selectbjets){
+    cleanLeptonsAndJets(event);//this already cleans the leptons from eachother as well with R=0.4
+    //apply trigger and pt thresholds and require muon and electron (in order)
+    if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
+    if(not passAnyTrigger(event)) return false;
+    if(!hasnFOLeptons(event,2,true)) return false;
+    if(not passDileptonPtThresholds(event)) return false;
+    if(not passPhotonOverlapRemoval(event)) return false;
+    if(!event.leptonCollection()[0].isMuon() || event.leptonCollection()[1].isMuon()) return false;
+    // do lepton selection for different types of selections
+    if(selectiontype=="tight"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+    if(hasnTightLeptons(event, 2, false)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;
+    // chargemisId Z candidate veto
+    if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
+    // low mass veto
+    if(not passMllMassVeto(event)) return false;
+    // require SS to diminish DY Zs
+    if( !event.leptonsAreSameSign()) return false;
+    // require jet stuff
+    std::pair<int,int> njetsnloosebjets = nJetsNLooseBJets(event, variation);
+    std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
+    if( njetsnbjets.second < 1 && njetsnloosebjets.second < 2 ) return false;
+    if( njetsnbjets.first < 2 ) return false;
+    if(variation=="dummy") return true;
+    if(selectbjets){}
+    return true;
+    }
+
+
+
+bool pass_signalregion_dilepton_em(Event& event, const std::string& selectiontype,
+                                const std::string& variation, const bool selectbjets){
+    cleanLeptonsAndJets(event);//this already cleans the leptons from eachother as well with R=0.4
+    //apply trigger and pt thresholds and require electron muon in order
+    if(not event.passMetFilters()) return false;
+    if(event.met().maxPtAnyVariation()<30) return false;
+    if(not passAnyTrigger(event)) return false;
+    if(!hasnFOLeptons(event,2,true)) return false;
+    if(not passDileptonPtThresholds(event)) return false;
+    if(not passPhotonOverlapRemoval(event)) return false;
+    if(event.leptonCollection()[0].isMuon() || !event.leptonCollection()[1].isMuon()) return false;
+    //do lepton selection for different types of selections
+    if(selectiontype=="tight"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    } else if(selectiontype=="prompt"){
+    if(!hasnTightLeptons(event, 2, true)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else if(selectiontype=="fakerate"){
+    if(hasnTightLeptons(event, 2, false)) return false;
+    if(event.isMC() and !allLeptonsArePrompt(event)) return false;
+    } else return false;
+    //chargemisId Z candidate veto
+    if( !event.hasOSSFLightLeptonPair() && event.hasZTollCandidate(halfwindow_dilep, true) ) return false;
+    //low mass veto
+    if(not passMllMassVeto(event)) return false;
+    //require SS to diminish DY Zs
+    if( !event.leptonsAreSameSign()) return false;
+    //require jet stuff
+    std::pair<int,int> njetsnloosebjets = nJetsNLooseBJets(event, variation);
+    std::pair<int,int> njetsnbjets = nJetsNBJets(event, variation);
+    if( njetsnbjets.second < 1 && njetsnloosebjets.second < 2 ) return false;
+    if( njetsnbjets.first < 2 ) return false;
+    if(variation=="dummy") return true;
+    if(selectbjets){}
+    return true;
+    }

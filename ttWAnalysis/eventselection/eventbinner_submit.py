@@ -10,21 +10,23 @@ for r in ['signalregion_dilepton','signalregion_trilepton']: regions.append(r)
 for r in ['wzcontrolregion','zzcontrolregion','zgcontrolregion']: regions.append(r)
 for r in ['nonprompt_trilepton_noossf','nonprompt_trilepton_noz']: regions.append(r)
 for r in ['nonprompt_trilepton']: regions.append(r)
+#for r in ['4lepton_controlregion', 'nonprompt_dilepton_invMET']: regions.append(r)
+for r in ['signalregion_dimuon','signalregion_dielectron','signalregion_dilepton_em','signalregion_dilepton_me']: regions.append(r)
 for r in ['nonprompt_dilepton']: regions.append(r)
 
-years = ['2017','2018']
+years = ['2016PreVFP','2016PostVFP','2017','2018']
 
 dtypes = ['sim','data']
 
 selection_types = []
 selection_types.append('tight')
-#selection_types.append('prompt')
-#selection_types.append('fakerate')
+selection_types.append('prompt')
+selection_types.append('fakerate')
 
 variations = []
 variations.append('nominal')
 
-frdir = '../fakerates/fakeRateMaps_v20220912_tttt'
+frdir = '../fakerates'
 
 samplelistdir = '../samplelists/fourtops'
 samplelistbase = 'samples_tttt_{}_{}.txt'
@@ -43,7 +45,7 @@ for year in years:
         inputdiryear = '2016'
     inputdir = os.path.join(inputdir, inputdiryear)
     samplelist = os.path.join(samplelistdir,samplelistbase.format(year,dtype))
-    outputdir = 'output_test3'
+    outputdir = 'output_test7'
     outputdir = os.path.join(outputdir, '{}_{}'.format(year,dtype))
     cmd = 'python eventbinner.py'
     cmd += ' --inputdir ' + inputdir

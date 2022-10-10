@@ -20,7 +20,7 @@ for r in ['nonprompt_dilepton']: regions.append(r)
 
 years = ['2016PreVFP', '2016PostVFP', '2017', '2018']
 
-npmodes = ['npfromsim']
+npmodes = ['npfromsim', 'npfromdata']
 
 variables = '../variables/variables_copyfromtzq.json'
 
@@ -35,7 +35,9 @@ for year in years:
       print('WARNING: input file {} does not exist; continuing...'.format(inputfile))
       continue
     for region in regions:
-      thisoutputdir = os.path.join(inputdir, subdir, 'plots', year+'_'+region+'_'+npmode)
+      thisoutputdir = os.path.join('/user/dmarckx/public_html/10_10', subdir, 'plots', year+'_'+region+'_'+npmode)#inputdir
+      #os.system("mkdir " + thisoutputdir)
+      #os.system("cp /user/dmarckx/public_html/fast/index.php " + thisoutputdir + "index.php")
       unblind = True
       if 'signalregion' in region: unblind = False
       cmd = 'python makeplots.py'
@@ -57,3 +59,10 @@ for year in years:
 if runmode=='condor':
   ct.submitCommandsAsCondorCluster('cjob_makeplots', cmds,
                                     cmssw_version=CMSSW_VERSION)
+  for year in years:
+    for npmode in npmodes:
+      subdir = os.path.join(year, 'merged_'+npmode)
+      for region in regions:
+        thisoutputdir = os.path.join('/user/dmarckx/public_html/10_10', subdir, 'plots', year+'_'+region+'_'+npmode)#inputdir
+        os.system("mkdir -p " + thisoutputdir)
+        os.system("cp /user/dmarckx/public_html/fast/index.php " + thisoutputdir + "/index.php")
