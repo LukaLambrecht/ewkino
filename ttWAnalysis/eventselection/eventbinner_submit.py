@@ -10,9 +10,9 @@ for r in ['signalregion_dilepton','signalregion_trilepton']: regions.append(r)
 for r in ['wzcontrolregion','zzcontrolregion','zgcontrolregion']: regions.append(r)
 for r in ['nonprompt_trilepton_noossf','nonprompt_trilepton_noz']: regions.append(r)
 for r in ['nonprompt_trilepton']: regions.append(r)
-#for r in ['4lepton_controlregion', 'nonprompt_dilepton_invMET']: regions.append(r)
+for r in ['4lepton_controlregion', 'controlregion_trilepton', 'nonprompt_dilepton_invMET']: regions.append(r)#, 'nonprompt_dilepton_invMET'
 for r in ['signalregion_dimuon','signalregion_dielectron','signalregion_dilepton_em','signalregion_dilepton_me']: regions.append(r)
-for r in ['nonprompt_dilepton']: regions.append(r)
+for r in ['nonprompt_dilepton', 'chargeMisId_dilepton']: regions.append(r)
 
 years = ['2016PreVFP','2016PostVFP','2017','2018']
 
@@ -45,7 +45,7 @@ for year in years:
         inputdiryear = '2016'
     inputdir = os.path.join(inputdir, inputdiryear)
     samplelist = os.path.join(samplelistdir,samplelistbase.format(year,dtype))
-    outputdir = 'output_test7'
+    outputdir = 'output_test8'
     outputdir = os.path.join(outputdir, '{}_{}'.format(year,dtype))
     cmd = 'python eventbinner.py'
     cmd += ' --inputdir ' + inputdir

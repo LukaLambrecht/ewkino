@@ -52,9 +52,7 @@ if __name__=="__main__":
 
   # print arguments
   print('Running with following configuration:')
-  fotogram with systematic uncertainties
-  # note: dummy implementation with only nonprompt uncertainty!
-  syshist = mchistlist[0]. arg in vars(args):
+  for arg in vars(args):
     print('  - {}: {}'.format(arg,getattr(args,arg)))
     
   # read all histograms

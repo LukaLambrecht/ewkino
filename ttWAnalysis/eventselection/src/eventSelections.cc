@@ -29,16 +29,17 @@ bool passES(Event& event, const std::string& eventselection,
                 { "signalregion_dilepton_me", pass_signalregion_dilepton_me },
                 { "signalregion_dilepton_em", pass_signalregion_dilepton_em },
 		{ "signalregion_trilepton", pass_signalregion_trilepton },
-		{ "wzcontrolregion", pass_wzcontrolregion },
-		{ "zzcontrolregion", pass_zzcontrolregion },
-		{ "zgcontrolregion", pass_zgcontrolregion },
+		{ "wzcontrolregion", pass_wzcontrolregion },//N
+		{ "zzcontrolregion", pass_zzcontrolregion },//N
+		{ "zgcontrolregion", pass_zgcontrolregion },//N
 		{ "nonprompt_trilepton_noossf", pass_nonprompt_trilepton_noossf },
 		{ "nonprompt_trilepton_noz", pass_nonprompt_trilepton_noz },
-		{ "nonprompt_trilepton", pass_nonprompt_trilepton },
-		{ "nonprompt_dilepton", pass_nonprompt_dilepton },
-                { "4lepton_controlregion", pass_4lepton_controlregion },
-                { "chargeMisId_dilepton", pass_chargeMisId_dilepton },
-                { "nonprompt_dilepton_invMET", pass_nonprompt_dilepton_invMET }
+		{ "nonprompt_trilepton", pass_nonprompt_trilepton },//N
+		{ "nonprompt_dilepton", pass_nonprompt_dilepton },//N
+                { "4lepton_controlregion", pass_4lepton_controlregion },//T
+                { "chargeMisId_dilepton", pass_chargeMisId_dilepton },//T
+                { "nonprompt_dilepton_invMET", pass_nonprompt_dilepton_invMET },//T
+		{ "controlregion_trilepton", pass_controlregion_trilepton }//T
 	    };
     auto it = ESFunctionMap.find( eventselection );
     if( it == ESFunctionMap.cend() ){
