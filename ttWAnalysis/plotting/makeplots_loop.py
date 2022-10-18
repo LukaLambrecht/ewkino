@@ -15,7 +15,8 @@ regions = []
 for r in ['signalregion_trilepton', 'signalregion_dilepton']: regions.append(r)
 for r in ['wzcontrolregion','zzcontrolregion','zgcontrolregion']: regions.append(r)
 #for r in ['nonprompt_trilepton_noossf','nonprompt_trilepton_noz']: regions.append(r)
-#for r in ['4lepton_controlregion']: regions.append(r)#, 'nonprompt_dilepton_invMET'
+for r in ['controlregion_trilepton','4lepton_controlregion','nonprompt_dilepton_invMET']: regions.append(r)#, 'nonprompt_dilepton_invMET'
+for r in ['nonprompt_dilepton_invMET_mm','nonprompt_dilepton_invMET_me','nonprompt_dilepton_invMET_em','nonprompt_dilepton_invMET_ee',]: regions.append(r)
 for r in ['signalregion_dimuon','signalregion_dielectron','signalregion_dilepton_em','signalregion_dilepton_me']: regions.append(r)
 for r in ['nonprompt_trilepton']: regions.append(r)
 for r in ['nonprompt_dilepton']: regions.append(r)
@@ -37,7 +38,7 @@ for year in years:
       print('WARNING: input file {} does not exist; continuing...'.format(inputfile))
       continue
     for region in regions:
-      thisoutputdir = os.path.join('/user/dmarckx/public_html/10_10/', subdir, 'plots', year+'_'+region+'_'+npmode)#inputdir
+      thisoutputdir = os.path.join('/user/dmarckx/public_html/14_10/', subdir, 'plots', year+'_'+region+'_'+npmode)#inputdir
       #os.system("mkdir " + thisoutputdir)
       #os.system("cp /user/dmarckx/public_html/fast/index.php " + thisoutputdir + "index.php")
       unblind = True
@@ -65,6 +66,6 @@ if runmode=='condor':
     for npmode in npmodes:
       subdir = os.path.join(year, 'merged_'+npmode)
       for region in regions:
-        thisoutputdir = os.path.join('/user/dmarckx/public_html/10_10/', subdir, 'plots', year+'_'+region+'_'+npmode)#inputdir
+        thisoutputdir = os.path.join('/user/dmarckx/public_html/14_10/', subdir, 'plots', year+'_'+region+'_'+npmode)#inputdir
         os.system("mkdir -p " + thisoutputdir)
         os.system("cp /user/dmarckx/public_html/fast/index.php " + thisoutputdir + "/index.php")

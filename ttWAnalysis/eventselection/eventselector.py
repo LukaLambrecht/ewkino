@@ -18,7 +18,7 @@ event_selections = (['wzcontrolregion','zzcontrolregion','zgcontrolregion',
                      'signalregion_dilepton', 'signalregion_dimuon','signalregion_dielectron','signalregion_dilepton_em','signalregion_dilepton_me','signalregion_trilepton',
                      'nonprompt_trilepton_noossf', 'nonprompt_trilepton_noz',
                      'nonprompt_trilepton', 'nonprompt_dilepton', '4lepton_controlregion','controlregion_trilepton', 
-                     'chargeMisId_dilepton', 'nonprompt_dilepton_invMET'])
+                     'chargeMisId_dilepton', 'nonprompt_dilepton_invMET','nonprompt_dilepton_invMET_mm','nonprompt_dilepton_invMET_me','nonprompt_dilepton_invMET_em','nonprompt_dilepton_invMET_ee',])
 selection_types = ['tight','prompt','fakerate','2tight']
 variations = ['nominal','all','JECDown','JECUp','JERDown','JERUp','UnclDown','UnclUp']
 

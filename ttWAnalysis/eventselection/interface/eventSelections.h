@@ -39,7 +39,17 @@ bool pass_nonprompt_dilepton(Event&, const std::string& selectiontype,
                         const std::string& variation, const bool selectbjets);
 bool pass_4lepton_controlregion(Event&, const std::string& selectiontype,
                         const std::string& variation, const bool selectbjets);
+bool pass_controlregion_trilepton(Event&, const std::string& selectiontype,
+                        const std::string& variation, const bool selectbjets);
 bool pass_nonprompt_dilepton_invMET(Event&, const std::string& selectiontype,
+                        const std::string& variation, const bool selectbjets);
+bool pass_nonprompt_dilepton_invMET_ee(Event&, const std::string& selectiontype,
+                        const std::string& variation, const bool selectbjets);
+bool pass_nonprompt_dilepton_invMET_me(Event&, const std::string& selectiontype,
+                        const std::string& variation, const bool selectbjets);
+bool pass_nonprompt_dilepton_invMET_em(Event&, const std::string& selectiontype,
+                        const std::string& variation, const bool selectbjets);
+bool pass_nonprompt_dilepton_invMET_mm(Event&, const std::string& selectiontype,
                         const std::string& variation, const bool selectbjets);
 bool pass_chargeMisId_dilepton(Event&, const std::string& selectiontype,
                         const std::string& variation, const bool selectbjets);
