@@ -84,6 +84,10 @@ class LeptonCollection : public PhysicsObjectCollection< Lepton > {
         LeptonCollection electronResUpCollection() const;
         LeptonCollection electronResDownCollection() const;
 
+	// sorting
+	void sortByPt( bool useConeCorrectedPt=true );
+	// (overriding PhysicsObjectCollection::sortByPt!)
+
     private:
 
         //clean electrons and taus
