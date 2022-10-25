@@ -2,6 +2,10 @@
 # a Python translation of ewkino/plotting/plotCode.cc/plot2DHistogam #
 ######################################################################
 
+remake_cpp_2dplots = True
+
+######################################################################
+
 import ROOT
 import sys
 import numpy as np
@@ -216,3 +220,18 @@ def plot2dhistogram(hist, outfilepath, outfmts=['.png'],
     c1.Update()
     outfilepath = os.path.splitext(outfilepath)[0]
     for outfmt in outfmts: c1.SaveAs(outfilepath+outfmt)
+
+
+if (remake_cpp_2dplots):
+    names = ["chargeFlipMap_MC_2016PreVFP", "chargeFlipMap_MC_2016PostVFP", "chargeFlipMap_MC_2017", "chargeFlipMap_MC_2018"]
+    years = ["2016PreVFP", "2016PostVFP", "2017", "2018"]
+    for i in range(len(names)):
+        bfile = ROOT.TFile.Open( "/user/dmarckx/public_html/chargeFlipMaps/" + names[i] + ".root" ,"READ")
+        hist = bfile.Get("chargeFlipRate_electron_" + years[i])
+    
+        plot2dhistogram(hist, "/user/dmarckx/public_html/chargeFlipMaps/python" + names[i],
+                    xtitle="p_{T} (GeV)", ytitle=r"$\eta$", 
+                    xtitleoffset=None, ytitleoffset=None,
+                    drawoptions='colztexte',
+                    docmstext=True, cms_in_grid=False,
+                    cmstext_size_factor=0.3, extracmstext='Preliminary', lumitext=r'x fb^{-1}')

@@ -26,7 +26,21 @@ bool ElectronSelector::isLooseBase() const{
     if( electronPtr->numberOfMissingHits() >= 2 ) return false;
     if( electronPtr->miniIso() >= 0.4 ) return false;
     if( std::abs(electronPtr->etaSuperCluster()) > 1.4442 
-        && std::abs(electronPtr->etaSuperCluster()) < 1.566) return false;
+        && std::abs(electronPtr->etaSuperCluster()) < 1.566 ) return false;
+    return true;
+}
+
+
+
+bool ElectronSelector::isLooseBase_CM() const{
+    if( electronPtr->uncorrectedPt() < 10 ) return false;
+    if( electronPtr->absEta() >= 2.5 ) return false;
+    if( fabs( electronPtr->dxy() ) >= 0.05 ) return false;
+    if( fabs( electronPtr->dz() ) >= 0.1 ) return false;
+    if( electronPtr->sip3d() >= 8 ) return false;
+    if( electronPtr->numberOfMissingHits() >= 2 ) return false;
+    if( electronPtr->miniIso() >= 0.4 ) return false;
+    //transition region veto is turned off for CM analysis
     return true;
 }
 
@@ -67,6 +81,15 @@ bool ElectronSelector::isFOBase() const{
     if( !electronPtr->passChargeConsistency() ) return false;
     return true;
 }
+
+
+bool ElectronSelector::isFOBase_CM() const{
+    if( !isLoose_CM() ) return false;
+    if( !electronPtr->passConversionVeto() ) return false;
+    if( !electronPtr->passChargeConsistency() ) return false;
+    return true;
+}
+
 
 
 bool ElectronSelector::isFO2016() const{
@@ -128,6 +151,15 @@ bool ElectronSelector::isTightBase() const{
     if( electronPtr->leptonMVATOPUL() <= leptonMVACutElectron() ) return false;
     return true;
 }
+
+
+
+bool ElectronSelector::isTightBase_CM() const{
+    if( !isFO_CM() ) return false;
+    if( electronPtr->leptonMVATOPUL() <= leptonMVACutElectron() ) return false;
+    return true;
+}
+
 
 
 bool ElectronSelector::isTight2016() const{

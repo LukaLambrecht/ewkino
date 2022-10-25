@@ -10,6 +10,10 @@ class LeptonSelector {
         bool isLoose() const;
         bool isFO() const;
         bool isTight() const;
+        bool isLoose_CM() const;
+        bool isFO_CM() const;
+        bool isTight_CM() const;
+
 
         virtual double coneCorrection() const = 0;
 
@@ -22,6 +26,7 @@ class LeptonSelector {
 	virtual bool isLoose2016PostVFP() const = 0;
         virtual bool isLoose2017() const = 0;
         virtual bool isLoose2018() const = 0;
+        virtual bool isLooseBase_CM() const = 0;
 
         virtual bool isFOBase() const = 0;
         virtual bool isFO2016() const = 0;
@@ -29,6 +34,7 @@ class LeptonSelector {
         virtual bool isFO2016PostVFP() const = 0;
         virtual bool isFO2017() const = 0;
         virtual bool isFO2018() const = 0;
+        virtual bool isFOBase_CM() const = 0;
 
         virtual bool isTightBase() const = 0;
         virtual bool isTight2016() const = 0;
@@ -36,6 +42,7 @@ class LeptonSelector {
         virtual bool isTight2016PostVFP() const = 0;
         virtual bool isTight2017() const = 0;
         virtual bool isTight2018() const = 0;
+        virtual bool isTightBase_CM() const = 0;
 
         virtual bool is2016() const = 0;
 	virtual bool is2016PreVFP() const = 0;

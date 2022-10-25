@@ -16,9 +16,9 @@ years = ['2016PreVFP','2016PostVFP','2017','2018']
 # (pick any combination from '2016PreVFP', '2016PostVFP', '2017' and '2018')
 flavours = ['electron']
 # (only 'electron supported for now')
-runmode = 'local'
+runmode = 'condor'
 # (pick from 'condor' or 'local')
-nentries = 100
+nentries = 2000000
 # (number of entries to use per file)
 samplelistdirectory = os.path.abspath('sampleListsUL')
 samplelist = 'samples_chargeFlips_MC_{}.txt'

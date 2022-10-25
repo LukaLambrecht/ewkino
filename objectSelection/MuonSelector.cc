@@ -25,6 +25,18 @@ bool MuonSelector::isLooseBase() const{
 }
 
 
+bool MuonSelector::isLooseBase_CM() const{
+    if( muonPtr->uncorrectedPt() <= 10 ) return false;
+    if( muonPtr->absEta() >= 2.4 ) return false;
+    if( fabs( muonPtr->dxy() ) >= 0.05 ) return false;
+    if( fabs( muonPtr->dz() ) >= 0.1 ) return false;
+    if( muonPtr->sip3d() >= 8 ) return false;
+    if( muonPtr->miniIso() >= 0.4 ) return false;
+    if( !muonPtr->isMediumPOGMuon() ) return false;
+    return true;
+}
+
+
 bool MuonSelector::isLoose2016() const{
     return true;
 }
@@ -72,6 +84,13 @@ bool MuonSelector::isFOBase() const{
     if( !isLoose() ) return false;
     return true;
 }
+
+
+bool MuonSelector::isFOBase_CM() const{
+    if( !isLoose_CM() ) return false;
+    return true;
+}
+
 
 
 bool MuonSelector::isFO2016() const{
@@ -125,6 +144,13 @@ tight muon selection
 
 bool MuonSelector::isTightBase() const{
     if( !isFO() ) return false;
+    if( muonPtr->leptonMVATOPUL() <= leptonMVACutMuon() ) return false;
+    return true;
+}
+
+
+bool MuonSelector::isTightBase_CM() const{
+    if( !isFO_CM() ) return false;
     if( muonPtr->leptonMVATOPUL() <= leptonMVACutMuon() ) return false;
     return true;
 }

@@ -33,8 +33,8 @@ void determineMCChargeFlipRate( const std::string& year,
     analysisTools::checkYearString( year );
 
     // initialize bins
-    const std::vector< double > ptBins = {10., 20., 30., 45., 65., 100., 200.};
-    const std::vector< double > etaBins = { 0., 0.8, 1.442, 2.5 };
+    const std::vector< double > ptBins = { 20., 45., 65., 100.,150., 200.};
+    const std::vector< double > etaBins = { 0.55, 1.1, 1.4442, 1.566, 1.85, 2.1, 2.5 };
 
     // initialize 2D histogram for numerator
     std::string numerator_name = "chargeFlipRate_numerator_electron_" + year;
@@ -103,7 +103,7 @@ void determineMCChargeFlipRate( const std::string& year,
     ratioMap->Divide( denominatorMap.get() );
 
     // create output directory if it does not exist 
-    std::string outputDirectory = "chargeFlipMaps";
+    std::string outputDirectory = "/user/dmarckx/public_html/chargeFlipMaps";
     systemTools::makeDirectory( outputDirectory );
     
     // plot fake-rate map

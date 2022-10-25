@@ -13,6 +13,15 @@ bool TauSelector::isLooseBase() const{
 }
 
 
+bool TauSelector::isLooseBase_CM() const{
+    if( tauPtr->pt() < 20 ) return false;
+    if( fabs( tauPtr->eta() ) >= 2.3 ) return false;
+    if( ! tauPtr->passDecayModeFinding() ) return false;
+    if( ! tauPtr->passVLooseMVAOld2017() ) return false;
+    return true;
+}
+
+
 bool TauSelector::isLoose2016() const{
     return true;
 }
@@ -48,6 +57,12 @@ bool TauSelector::isFOBase() const{
 }
 
 
+bool TauSelector::isFOBase_CM() const{
+    if( !isLoose() ) return false;
+    return true;
+}
+
+
 bool TauSelector::isFO2016() const{
     return true;
 }
@@ -78,6 +93,13 @@ tight tau selection
 */
 
 bool TauSelector::isTightBase() const{
+    if( !isFO() ) return false;
+    if( !tauPtr->passTightMVAOld2017() ) return false;
+    return true;
+}
+
+
+bool TauSelector::isTightBase_CM() const{
     if( !isFO() ) return false;
     if( !tauPtr->passTightMVAOld2017() ) return false;
     return true;

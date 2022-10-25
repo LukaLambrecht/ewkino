@@ -9,14 +9,14 @@
 
 
 bool chargeFlips::passChargeRequirements( const Electron& electron ){
-    if( !electron.isTight() ) return false;
+    if( !electron.isTight_CM() ) return false;
     if( !electron.passChargeConsistency() ) return false;
     return true;
 }
 
 
 bool chargeFlips::passChargeRequirements( const Muon& muon ){
-    if( !muon.isTight() ) return false;
+    if( !muon.isTight_CM() ) return false;
     if( fabs( muon.trackPtError() / muon.trackPt() ) > 0.2 ) return false;
     return true;
 }
@@ -30,15 +30,15 @@ bool chargeFlips::passChargeFlipEventSelection( Event& event,
 
     // baseline lepton selection
     event.cleanElectronsFromLooseMuons();
-    event.selectLooseLeptons();
+    event.selectLooseLeptons_chargemap();
 
     // clean jets from leptons before tightening selection
     event.cleanJetsFromFOLeptons();
     event.selectGoodJets();
     
     // select two leptons passing tight
-    if( event.numberOfLightLeptons() != 2 ) return false;
-    event.selectTightLeptons();
+    //if( event.numberOfLightLeptons() != 2 ) return false;
+    event.selectTightLeptons_chargemap();
 
     // apply charge requirements
     //event.selectElectrons( chargeFlips::passChargeRequirements );
@@ -49,6 +49,9 @@ bool chargeFlips::passChargeFlipEventSelection( Event& event,
 
     // if specified require that both leptons are electrons
     if( diElectron && event.numberOfElectrons() != 2 ) return false;
+
+    // if specified require that both leptons are muons
+    //if( diMuon && event.numberOfMuons() != 2 ) return false;
 
     // if specified require the invariant mass to be compatible with the Z
     if( onZ ){

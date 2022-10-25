@@ -24,6 +24,7 @@ class TauSelector : public LeptonSelector {
         virtual bool isLoose2016PostVFP() const override;
         virtual bool isLoose2017() const override;
         virtual bool isLoose2018() const override;
+        virtual bool isLooseBase_CM() const override;
 
         virtual bool isFOBase() const override;
         virtual bool isFO2016() const override;
@@ -31,6 +32,7 @@ class TauSelector : public LeptonSelector {
         virtual bool isFO2016PostVFP() const override;
         virtual bool isFO2017() const override;
         virtual bool isFO2018() const override;
+        virtual bool isFOBase_CM() const override;
 
         virtual bool isTightBase() const override;
         virtual bool isTight2016() const override;
@@ -38,6 +40,7 @@ class TauSelector : public LeptonSelector {
         virtual bool isTight2016PostVFP() const override;
         virtual bool isTight2017() const override;
         virtual bool isTight2018() const override;
+        virtual bool isTightBase_CM() const override;
 
         virtual double coneCorrection() const override;
 

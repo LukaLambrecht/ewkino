@@ -655,6 +655,7 @@ void plot2DHistogram( TH2D* hist, const std::string& outputFileName,
     // is there a lockless solution for this? Try to find out!
     static std::mutex plotMutex;
     initializeTDRStyle();
+    gStyle->SetPaintTextFormat("4.2e"); //has to be added for the small chargeflip probability
     plotMutex.lock();
     
     // initializations

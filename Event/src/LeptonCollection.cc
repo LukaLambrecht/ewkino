@@ -88,11 +88,28 @@ void LeptonCollection::selectTightLeptons(){
 }
 
 
+void LeptonCollection::selectLooseLeptons_chargemap(){
+    selectObjects( &Lepton::isLoose_CM );
+}
+
+
+void LeptonCollection::selectTightLeptons_chargemap(){
+    selectObjects( &Lepton::isLoose_CM );
+}
+
+
 LeptonCollection LeptonCollection::selectedCollection( void (LeptonCollection::*applySelection)() ) const{
     LeptonCollection lepCol( *this );
     (lepCol.*applySelection)();
     return lepCol;
 }
+
+
+//LeptonCollection LeptonCollection::selectedCollection( void (LeptonCollection::*applySelection)() ) const{
+//    LeptonCollection lepCol( *this );
+//    (lepCol.*applySelection)();
+//    return lepCol;
+//}
 
 
 LeptonCollection LeptonCollection::looseLeptonCollection() const{
