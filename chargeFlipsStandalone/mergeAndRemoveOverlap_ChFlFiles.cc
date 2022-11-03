@@ -199,7 +199,7 @@ void mergeAndRemoveOverlap_ChFl( const std::vector< std::string >& inputPathVect
 	msg += " corresponding to different files unless explicitly specified.";
         throw std::logic_error( msg );
     }
-    std::cerr << "oi, the problem is here\n";
+    
     // initialize TreeReader
     TreeReader treeReader;
 
@@ -209,7 +209,7 @@ void mergeAndRemoveOverlap_ChFl( const std::vector< std::string >& inputPathVect
     outputFilePtr->cd( "blackJackAndHookers" );
     std::shared_ptr< TTree > outputTreePtr( std::make_shared< TTree >( 
 				"blackJackAndHookersTree","blackJackAndHookersTree" ) );
-    std::cerr << "okay, im wrong...\n";
+    
     // histograms stored in file
     //std::map< std::string, std::shared_ptr< TH1 > > outputHistogramMap;
 
