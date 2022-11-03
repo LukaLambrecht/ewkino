@@ -144,9 +144,9 @@ void determineMCChargeFlipRate( const std::string& year,
     // initialize bins
     //const std::vector< double > ptBins = {10., 20., 30., 45., 65., 100., 200.};
     //const std::vector< double > etaBins = { 0., 0.8, 1.442, 2.5 };
-    // for syncing with TT:
-    const std::vector< double > ptBins = {10., 30., 45., 65., 100., 200.};
-    const std::vector< double > etaBins = { 0., 0.4, 0.8, 1.1, 1.4, 1.6, 1.9, 2.2, 2.5 };
+    // for syncing with TT (just changed to veto region=> but see comments in AN of niels for problems with statistics in this binning):
+    const std::vector< double > ptBins = {10., 40., 75., 100., 150., 200.};
+    const std::vector< double > etaBins = { 0., 0.4, 0.8, 1.1, 1.4442, 1.566, 1.9, 2.2, 2.5 };
 
     // initialize 2D histogram for numerator
     std::string numerator_name = "chargeFlipRate_numerator_" + flavour + "_" + year;
@@ -182,6 +182,7 @@ void determineMCChargeFlipRate( const std::string& year,
 	if( nEntries>0 && (unsigned)nEntries<numberOfEntries ){ 
 	    numberOfEntries = (unsigned) nEntries; 
 	}
+
 	std::cout << "starting loop over " << numberOfEntries << " events." << std::endl;
         for( long unsigned entry = 0; entry < numberOfEntries; ++entry ){
 	    treeReader._currentTreePtr->GetEntry(entry);
@@ -222,33 +223,39 @@ void determineMCChargeFlipRate( const std::string& year,
 	    bool considerL1 = true;
 	    if( flavour=="muon" && _lFlavor[l1]!=1 ) considerL1 = false;
 	    if( flavour=="electron" && _lFlavor[l1]!=0 ) considerL1 = false;
-	    if( !_lIsPrompt[l1] ) considerL1 = false;
-	    if( _lMatchPdgId[l1]==22 ) considerL1 = false;
 	    bool l1IsChargeFlip = (_lCharge[l1]!=_lMatchCharge[l1]);
 
 	    // fill histograms
-            if(considerL1){
-		numberOfPassingLeptons++;
-		histogram::fillValues( denominatorMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
-		if( l1IsChargeFlip ){
-		    histogram::fillValues( numeratorMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
-		    histogram::fillValues( ratioMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
-                }
-	    }
+            //if(considerL1){
+	    //numberOfPassingLeptons++;
+	//	histogram::fillValues( denominatorMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
+	//	if( l1IsChargeFlip ){
+	//	    histogram::fillValues( numeratorMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
+	//	    histogram::fillValues( ratioMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
+        //        }
+	//    }
 
 	    // check second lepton
 	    bool considerL2 = true;
             if( flavour=="muon" && _lFlavor[l2]!=1 ) considerL2 = false;
-	    if( flavour=="elecron" && _lFlavor[l2]!=0 ) considerL2 = false;
-            if( !_lIsPrompt[l2] ) considerL2 = false;
-            if( _lMatchPdgId[l2]==22 ) considerL2 = false;
+	    if( flavour=="electron" && _lFlavor[l2]!=0 ) considerL2 = false;
             bool l2IsChargeFlip = (_lCharge[l2]!=_lMatchCharge[l2]);
 
 	    // fill histograms
-            if(considerL2){
-		numberOfPassingLeptons++;
-                histogram::fillValues( denominatorMap.get(), _lPtCorr[l2], fabs(_lEta[l2]), 1. );
-                if( l2IsChargeFlip ){
+            if(_lIsPrompt[l2] && _lIsPrompt[l1] && (!(_lMatchPdgId[l2]==22)) && (!(_lMatchPdgId[l1]==22))){
+		if(considerL1 && considerL2){
+                    histogram::fillValues( denominatorMap.get(), _lPtCorr[l2], fabs(_lEta[l2]), 1. );
+                    numberOfPassingLeptons++;
+                }
+                if(considerL1 && considerL2){
+                    histogram::fillValues( denominatorMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
+                    numberOfPassingLeptons++;
+                }
+                if( considerL2 && considerL1 && l1IsChargeFlip ){
+                    histogram::fillValues( numeratorMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
+                    histogram::fillValues( ratioMap.get(), _lPtCorr[l1], fabs(_lEta[l1]), 1. );
+                }
+                if( considerL1 && considerL2 && l2IsChargeFlip ){
                     histogram::fillValues( numeratorMap.get(), _lPtCorr[l2], fabs(_lEta[l2]), 1. );
                     histogram::fillValues( ratioMap.get(), _lPtCorr[l2], fabs(_lEta[l2]), 1. );
                 }
@@ -261,7 +268,7 @@ void determineMCChargeFlipRate( const std::string& year,
     ratioMap->Divide( denominatorMap.get() );
 
     // create output directory if it does not exist 
-    std::string outputDirectory = "chargeFlipMaps";
+    std::string outputDirectory = "~/public_html/chargeFlipMaps";
     systemTools::makeDirectory( outputDirectory );
     
     // plot fake-rate map

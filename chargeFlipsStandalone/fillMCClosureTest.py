@@ -15,17 +15,17 @@ from samplelisttools import readsamplelist
 years = ['2016PreVFP','2016PostVFP','2017','2018']
 # (pick any combination from '2016PreVFP', '2016PostVFP', '2017' and '2018')
 flavours = ['electron']
-# (only 'electron supported for now')
+# ( for now only supported when you run 1 at a time, otherwise the plotting script gets confused)
 processes = ['DY','TT']
 # (pick any combination from 'DY' and 'TT')
 runmode = 'condor'
 # (pick from 'condor' or 'local')
-nentries = 1e+6
+nentries = -1
 # (number of entries to use per file)
-samplelistdirectory = os.path.abspath('sampleListsUL')
+samplelistdirectory = os.path.abspath('../chargeFlips/sampleListsUL')
 samplelist = 'samples_closureTest_chargeFlips_{}_{}.txt'
 # (see also below in loop to set the correct sample list name per flavour/year!)
-sampledirectory = '/pnfs/iihe/cms/store/user/llambrec/dileptonskim_ttw_sim/{}'
+sampledirectory = '/pnfs/iihe/cms/store/user/llambrec/dileptonskim_ttw_chargeflips/sim/{}'
 # (directory where samples are located)
 
 # check if executable exists

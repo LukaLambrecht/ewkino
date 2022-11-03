@@ -10,4 +10,5 @@
 
 namespace chargeFlips{
     double chargeFlipWeight( const Event&, const std::shared_ptr< TH2 >& );
+    double chargeFlipWeight( const int&, const int&, const double&, const double&, const double&, const double&, const bool&, const std::shared_ptr< TH2 >& );
 }

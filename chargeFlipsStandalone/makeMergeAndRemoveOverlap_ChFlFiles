@@ -1,0 +1,12 @@
+CC=g++ -Wall -Wextra -O3
+CFLAGS= -Wl,--no-as-needed,-lpthread
+LDFLAGS=`root-config --glibs --cflags`
+SOURCES= mergeAndRemoveOverlap_ChFlFiles.cc ../codeLibrary.o ../chargeFlips/src/chargeFlipSelection.cc ../chargeFlips/src/chargeFlipTools.cc ../Event/interface/EventTags.h
+OBJECTS=$(SOURCES:.cc=.o)
+EXECUTABLE=mergeAndRemoveOverlap
+
+all: 
+	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o $(EXECUTABLE)
+	
+clean:
+	rm -rf *o $(EXECUTABLE)

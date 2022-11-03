@@ -1,0 +1,90 @@
+Start job!
+processing file 1 of 4
+Youll never see meprocessed: 0 of 47639235
+processed: 1000000 of 47639235
+processed: 2000000 of 47639235
+processed: 3000000 of 47639235
+processed: 4000000 of 47639235
+processed: 5000000 of 47639235
+processed: 6000000 of 47639235
+processed: 7000000 of 47639235
+processed: 8000000 of 47639235
+processed: 9000000 of 47639235
+processed: 10000000 of 47639235
+processed: 11000000 of 47639235
+processed: 12000000 of 47639235
+processed: 13000000 of 47639235
+processed: 14000000 of 47639235
+processed: 15000000 of 47639235
+processed: 16000000 of 47639235
+processed: 17000000 of 47639235
+processed: 18000000 of 47639235
+processed: 19000000 of 47639235
+processed: 20000000 of 47639235
+processed: 21000000 of 47639235
+processed: 22000000 of 47639235
+processed: 23000000 of 47639235
+processed: 24000000 of 47639235
+processed: 25000000 of 47639235
+processed: 26000000 of 47639235
+processed: 27000000 of 47639235
+processed: 28000000 of 47639235
+processed: 29000000 of 47639235
+processed: 30000000 of 47639235
+processed: 31000000 of 47639235
+processed: 32000000 of 47639235
+processed: 33000000 of 47639235
+processed: 34000000 of 47639235
+processed: 35000000 of 47639235
+processed: 36000000 of 47639235
+processed: 37000000 of 47639235
+processed: 38000000 of 47639235
+processed: 39000000 of 47639235
+processed: 40000000 of 47639235
+processed: 41000000 of 47639235
+processed: 42000000 of 47639235
+processed: 43000000 of 47639235
+processed: 44000000 of 47639235
+processed: 45000000 of 47639235
+processed: 46000000 of 47639235
+processed: 47000000 of 47639235
+processing file 2 of 4
+Youll never see meprocessed: 0 of 29389228
+processed: 1000000 of 29389228
+processed: 2000000 of 29389228
+processed: 3000000 of 29389228
+processed: 4000000 of 29389228
+processed: 5000000 of 29389228
+processed: 6000000 of 29389228
+processed: 7000000 of 29389228
+processed: 8000000 of 29389228
+processed: 9000000 of 29389228
+processed: 10000000 of 29389228
+processed: 11000000 of 29389228
+processed: 12000000 of 29389228
+processed: 13000000 of 29389228
+processed: 14000000 of 29389228
+processed: 15000000 of 29389228
+processed: 16000000 of 29389228
+processed: 17000000 of 29389228
+processed: 18000000 of 29389228
+processed: 19000000 of 29389228
+processed: 20000000 of 29389228
+processed: 21000000 of 29389228
+processed: 22000000 of 29389228
+processed: 23000000 of 29389228
+processed: 24000000 of 29389228
+processed: 25000000 of 29389228
+processed: 26000000 of 29389228
+processed: 27000000 of 29389228
+processed: 28000000 of 29389228
+processed: 29000000 of 29389228
+processing file 3 of 4
+Youll never see meprocessed: 0 of 1317246
+processed: 1000000 of 1317246
+processing file 4 of 4
+Youll never see meprocessed: 0 of 3176271
+processed: 1000000 of 3176271
+processed: 2000000 of 3176271
+processed: 3000000 of 3176271
+Job done!

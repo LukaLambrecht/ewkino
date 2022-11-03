@@ -303,9 +303,18 @@ class TreeReader {
 				 const bool is2016PostVFP,
 				 const bool is2017, const bool is2018, 
 				 const bool resetTriggersAndFilters = true );
+        void initSampleFromFile( const std::string& pathToFile,
+                                 const bool is2016,
+                                 const bool is2016PreVFP,
+                                 const bool is2016PostVFP,
+                                 const bool is2017, const bool is2018,
+                                 const bool resetTriggersAndFilters,
+                                 const bool doInitTree);
         void initSampleFromFile( const std::string& pathToFile, 
 				 const bool resetTriggersAndFilters = true );
-
+        void initSampleFromFile( const std::string& pathToFile,
+                                 const bool resetTriggersAndFilters, 
+                                 const bool doInitTree);
         //Get entry from Tree, should not be used except for test purposes
         void GetEntry(const Sample&, long unsigned );
         void GetEntry(long unsigned );

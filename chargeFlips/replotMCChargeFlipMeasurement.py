@@ -4,40 +4,42 @@
 
 import sys
 import os
-import argparse
-sys.path.append('../Tools/python')
-import histtools as ht
-sys.path.append('../plotting/python')
-from hist2dplotter import plot2dhistogram
+#import argparse
+#sys.path.append('../Tools/python')
+#import histtools as ht
+#sys.path.append('../plotting/python')
+#from hist2dplotter import plot2dhistogram
 
 if __name__=='__main__':
 
   # parse arguments
-  parser = argparse.ArgumentParser('Plot charge flip maps')
-  parser.add_argument('--inputdir', required=True, type=os.path.abspath)
-  args = parser.parse_args()
+  #parser = argparse.ArgumentParser('Plot charge flip maps')
+  #parser.add_argument('--inputdir', required=True, type=os.path.abspath)
+  #args = parser.parse_args()
 
   # print arguments
-  print('Running with following configuration:')
-  for arg in vars(args):
-    print('  - {}: {}'.format(arg,getattr(args,arg)))
-
+  #print('Running with following configuration:')
+  #for arg in vars(args):
+  #  print('  - {}: {}'.format(arg,getattr(args,arg)))
+  
+  inputdir = "~/public_html/chargeFlipMaps/"
   # argument checks and parsing
-  if not os.path.exists(args.inputdir):
-    raise Exception('ERROR: input directory {} does not exist.'.format(args.inputdir))
+  if not os.path.exists(inputdir):
+    raise Exception('ERROR: input directory {} does not exist.'.format(inputdir))
 
   # find and loop over all root files in the input directory
-  inputfiles = [f for f in os.listdir(args.inputdir) if f.endswith('.root')]
+  inputfiles = [f for f in os.listdir(inputdir) if f.endswith('.root')]
+  print(inputfiles)
   for f in inputfiles:
     # get properties from filename
     nameparts = f.replace('.root','').split('_')
-    flavour = nameparts[2]
-    year = nameparts[3]
+    flavour = nameparts[3]
+    year = nameparts[4]
     print('Running on file {} with following properties:'.format(f))
     print('  - year: {}'.format(year))
     print('  - flavour: {}'.format(flavour))
     # load the charge flip map
-    histlist = ht.loadhistograms(os.path.join(args.inputdir,f), 
+    histlist = ht.loadhistograms(os.path.join(inputdir,f), 
 		mustcontainall=['chargeFlipRate_{}_{}'.format(flavour,year)])
     if len(histlist)!=1:
 	raise Exception('ERROR in file {}:'.format(f)
@@ -45,8 +47,8 @@ if __name__=='__main__':
     hist = histlist[0]
     # set plot properties
     title = 'Simulated charge misid. maps for {} {}s'.format(year,flavour)
-    figname = 'chargeFlipMap_MC_{}_{}'.format(flavour,year)
-    figname = os.path.join(args.inputdir,figname)
+    figname = 'pythonChargeFlipMap_MC_{}_{}'.format(flavour,year)
+    figname = os.path.join(inputdir,figname)
     xaxtitle = hist.GetXaxis().GetTitle()
     yaxtitle = hist.GetYaxis().GetTitle()
     zaxtitle = 'Charge misid. rate'
@@ -59,5 +61,5 @@ if __name__=='__main__':
                     titlesize=None,
                     drawoptions='colztexte', cmin=None, cmax=None,
 		    bintextoptions='4.2e',
-                    docmstext=False,
+                    docmstext=True,
                     topmargin=None, bottommargin=None, leftmargin=0.1, rightmargin=0.2)

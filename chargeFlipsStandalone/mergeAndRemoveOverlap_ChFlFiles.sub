@@ -1,0 +1,6 @@
+executable              = mergeAndRemoveOverlap_ChFlFiles.sh
+log = submitlog/log_$(Process).txt
+output = submitlog/out_$(Process).txt
+error = submitlog/err_$(Process).txt
+should_transfer_files = No
+queue 1

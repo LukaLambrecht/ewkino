@@ -1,0 +1,9 @@
+/storage_mnt/storage/user/dmarckx/ewkino/chargeFlipsStandalone/mergeAndRemoveOverlap_ChFlFiles.sh: line 1: !/bin/bash: No such file or directory
+###starting###
+/pnfs/iihe/cms/store/user/llambrec/dileptonskim_ttw_chargeflips/data/2018/DoubleMuon_Summer20UL18.rootoi, the problem is here
+okay, im wrong...
+WARNING in TreeReader.setOutputTree: requested to include tau info in output tree, but there appear to be no tau info branches in the input tree; will skip writing tau info to output tree!
+WARNING in TreeReader.setOutputTree: requested to include tau info in output tree, but there appear to be no tau info branches in the input tree; will skip writing tau info to output tree!
+WARNING in TreeReader.setOutputTree: requested to include tau info in output tree, but there appear to be no tau info branches in the input tree; will skip writing tau info to output tree!
+WARNING in TreeReader.setOutputTree: requested to include tau info in output tree, but there appear to be no tau info branches in the input tree; will skip writing tau info to output tree!
+###done###

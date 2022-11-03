@@ -18,12 +18,12 @@ flavours = ['electron','muon']
 # (only 'electron supported for now')
 runmode = 'condor'
 # (pick from 'condor' or 'local')
-nentries = 5e6
+nentries = -1
 # (number of entries to use per file)
 samplelistdirectory = os.path.abspath('../chargeFlips/sampleListsUL')
 samplelist = 'samples_chargeFlips_MC_{}.txt'
 # (see also below in loop to set the correct sample list name per flavour/year!)
-sampledirectory = '/pnfs/iihe/cms/store/user/llambrec/dileptonskim_ttw_sim/{}'
+sampledirectory = '/pnfs/iihe/cms/store/user/llambrec/dileptonskim_ttw_chargeflips/sim/{}'
 # (directory where samples are located)
 
 # check if executable exists

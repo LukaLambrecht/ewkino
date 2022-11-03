@@ -1,0 +1,9 @@
+DY  sim/DYFX0J50_Summer20UL16MiniAOD.root  
+DY  sim/DYMLM10_Summer20UL16MiniAOD.root
+DY  sim/DYFX1J50_Summer20UL16MiniAOD.root  
+DY  sim/DYMLM50_Summer20UL16MiniAOD.root
+DY  sim/DYFX2J50_Summer20UL16MiniAOD.root
+DY  sim/DYFXFX50_Summer20UL16MiniAOD.root
+TT  sim/TTJets_Summer20UL16MiniAOD.root 
+TT  sim/TT_Dil_Summer20UL16MiniAOD.root
+

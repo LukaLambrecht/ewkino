@@ -467,6 +467,49 @@ void TreeReader::initSampleFromFile( const std::string& pathToFile,
 }
 
 
+//initialize the current Sample directly from a root file, this is used when skimming
+void TreeReader::initSampleFromFile( const std::string& pathToFile,
+                                     const bool is2016,
+                                     const bool is2016PreVFP,
+                                     const bool is2016PostVFP,
+                                     const bool is2017,
+                                     const bool is2018,
+                                     const bool resetTriggersAndFilters,
+                                     const bool doInitTree ){
+    // check if file exists 
+    if( !systemTools::fileExists( pathToFile ) ){
+    throw std::invalid_argument( "File '" + pathToFile + "' does not exist." );
+    }
+    _currentFilePtr = std::shared_ptr< TFile >( new TFile( pathToFile.c_str() ) );
+    // check year
+    if( !(is2016 || is2016PreVFP || is2016PostVFP || is2017 || is2018 ) ){
+    std::string msg = "ERROR in TreeReader::initSampleFromFile:";
+    msg += " no valid year was given for sample ";
+    msg += pathToFile;
+    throw std::runtime_error(msg);
+    }
+    // old comment from Willem:
+    // "Warning: this pointer is overwritten, but it is not a memory leak. 
+    // ROOT is dirty and deletes the previous tree upon closure of the TFile it belongs to.
+    // The previous TFile is closed by the std::shared_ptr destructor, 
+    // implicitly called above when opening a new TFile."
+    _currentTreePtr = (TTree*) _currentFilePtr->Get( "blackJackAndHookersTree" );			//removed directory for Gianny's samples!!!
+    checkCurrentTree();
+    // make a new sample, and make sure the pointer remains valid
+    // old comment from Willem:
+    // "new is no option here since this would also require a destructor for the class, 
+    // which does not work for the other initSample case"
+    _currentSamplePtr = std::make_shared< Sample >( pathToFile, is2016, is2016PreVFP,
+    is2016PostVFP, is2017, is2018, isData() );
+    //initialize tree
+    if(doInitTree){initTree( resetTriggersAndFilters );}
+    //check wether current sample is a SUSY sample
+    //_isSusy = containsSusyMassInfo();
+    // set scale so weights don't become 0 when building the event
+    scale = 1.;
+}
+
+
 //automatically determine whether sample is 2017 or 2018 from file name 
 void TreeReader::initSampleFromFile( const std::string& pathToFile, 
 				     const bool resetTriggersAndFilters ){
@@ -477,6 +520,19 @@ void TreeReader::initSampleFromFile( const std::string& pathToFile,
     bool is2018 = analysisTools::fileIs2018( pathToFile );
     initSampleFromFile( pathToFile, is2016, is2016PreVFP, is2016PostVFP, is2017, is2018, 
 			resetTriggersAndFilters );
+}
+
+
+//automatically determine whether sample is 2017 or 2018 from file name 
+void TreeReader::initSampleFromFile( const std::string& pathToFile,
+    const bool resetTriggersAndFilters, const bool doInitTree ){
+    bool is2016 = analysisTools::fileIs2016( pathToFile );
+    bool is2016PreVFP = analysisTools::fileIs2016PreVFP( pathToFile );
+    bool is2016PostVFP = analysisTools::fileIs2016PostVFP( pathToFile );
+    bool is2017 = analysisTools::fileIs2017( pathToFile );
+    bool is2018 = analysisTools::fileIs2018( pathToFile );
+    initSampleFromFile( pathToFile, is2016, is2016PreVFP, is2016PostVFP, is2017, is2018,
+         resetTriggersAndFilters, doInitTree);
 }
 
 

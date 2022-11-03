@@ -1,0 +1,425 @@
+000 (884189.000.000) 2022-10-31 09:08:14 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+009 (884188.000.000) 2022-10-31 09:08:27 Job was aborted.
+	via condor_rm (by user dmarckx)
+...
+001 (884189.000.000) 2022-10-31 09:09:17 Job executing on host: <192.168.31.5:9618?addrs=192.168.31.5-9618&alias=node31-5.wn.iihe.ac.be&noUDP&sock=startd_1631_4f0e>
+...
+006 (884189.000.000) 2022-10-31 09:09:18 Image size of job updated: 15000
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (884189.000.000) 2022-10-31 09:09:18 Job terminated.
+	(1) Normal termination (return value 1)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :    15000    15000    835438 
+	   Memory (MB)          :        0       15       100 
+
+	Job terminated of its own accord at 2022-10-31T08:09:18Z.
+...
+000 (884192.000.000) 2022-10-31 09:20:21 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884192.000.000) 2022-10-31 09:20:25 Job executing on host: <192.168.26.5:9618?addrs=192.168.26.5-9618&alias=node26-5.wn.iihe.ac.be&noUDP&sock=startd_2117_aa15>
+...
+006 (884192.000.000) 2022-10-31 09:20:26 Image size of job updated: 1
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (884192.000.000) 2022-10-31 09:20:26 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :        1        1    845872 
+	   Memory (MB)          :        0        1       100 
+
+	Job terminated of its own accord at 2022-10-31T08:20:26Z.
+...
+000 (884193.000.000) 2022-10-31 09:21:47 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884193.000.000) 2022-10-31 09:21:50 Job executing on host: <192.168.30.3:9618?addrs=192.168.30.3-9618&alias=node30-3.wn.iihe.ac.be&noUDP&sock=startd_1747_e00a>
+...
+006 (884193.000.000) 2022-10-31 09:21:50 Image size of job updated: 1
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (884193.000.000) 2022-10-31 09:21:50 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :        1        1    846316 
+	   Memory (MB)          :        0        1       100 
+
+	Job terminated of its own accord at 2022-10-31T08:21:50Z.
+...
+000 (884194.000.000) 2022-10-31 09:23:32 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884194.000.000) 2022-10-31 09:24:35 Job executing on host: <192.168.31.7:9618?addrs=192.168.31.7-9618&alias=node31-7.wn.iihe.ac.be&noUDP&sock=startd_1687_b85c>
+...
+006 (884194.000.000) 2022-10-31 09:24:36 Image size of job updated: 1
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (884194.000.000) 2022-10-31 09:24:36 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :        1        1    843693 
+	   Memory (MB)          :        0        1       100 
+
+	Job terminated of its own accord at 2022-10-31T08:24:36Z.
+...
+000 (884195.000.000) 2022-10-31 09:27:16 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884195.000.000) 2022-10-31 09:27:18 Job executing on host: <192.168.31.7:9618?addrs=192.168.31.7-9618&alias=node31-7.wn.iihe.ac.be&noUDP&sock=startd_1687_b85c>
+...
+006 (884195.000.000) 2022-10-31 09:27:19 Image size of job updated: 1
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (884195.000.000) 2022-10-31 09:27:19 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :        1        1    843693 
+	   Memory (MB)          :        0        1       100 
+
+	Job terminated of its own accord at 2022-10-31T08:27:19Z.
+...
+000 (884196.000.000) 2022-10-31 09:28:09 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884196.000.000) 2022-10-31 09:28:20 Job executing on host: <192.168.22.13:9618?addrs=192.168.22.13-9618&alias=node22-13.wn.iihe.ac.be&noUDP&sock=startd_1744_d142>
+...
+006 (884196.000.000) 2022-10-31 09:28:22 Image size of job updated: 1
+	0  -  MemoryUsage of job (MB)
+	0  -  ResidentSetSize of job (KB)
+...
+005 (884196.000.000) 2022-10-31 09:28:22 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :                 1         1 
+	   Disk (KB)            :        1        1    380887 
+	   Memory (MB)          :        0        1       100 
+
+	Job terminated of its own accord at 2022-10-31T08:28:22Z.
+...
+000 (884197.000.000) 2022-10-31 09:30:34 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884197.000.000) 2022-10-31 09:30:36 Job executing on host: <192.168.31.8:9618?addrs=192.168.31.8-9618&alias=node31-8.wn.iihe.ac.be&noUDP&sock=startd_1714_3d6a>
+...
+006 (884197.000.000) 2022-10-31 09:30:44 Image size of job updated: 374656
+	95  -  MemoryUsage of job (MB)
+	97268  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 09:35:44 Image size of job updated: 7175308
+	6446  -  MemoryUsage of job (MB)
+	6599696  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 09:40:45 Image size of job updated: 7640420
+	7122  -  MemoryUsage of job (MB)
+	7291944  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 09:45:46 Image size of job updated: 8350300
+	7761  -  MemoryUsage of job (MB)
+	7946832  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 09:50:46 Image size of job updated: 9056120
+	8441  -  MemoryUsage of job (MB)
+	8642840  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 09:55:46 Image size of job updated: 9471384
+	8441  -  MemoryUsage of job (MB)
+	8642840  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 10:00:47 Image size of job updated: 10061388
+	8708  -  MemoryUsage of job (MB)
+	8916700  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 10:05:47 Image size of job updated: 10424832
+	8708  -  MemoryUsage of job (MB)
+	8916700  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 10:10:47 Image size of job updated: 10907332
+	8708  -  MemoryUsage of job (MB)
+	8916700  -  ResidentSetSize of job (KB)
+...
+006 (884197.000.000) 2022-10-31 10:13:44 Image size of job updated: 11070932
+	8708  -  MemoryUsage of job (MB)
+	8916700  -  ResidentSetSize of job (KB)
+...
+005 (884197.000.000) 2022-10-31 10:13:44 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:31:50, Sys 0 00:01:37  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:31:50, Sys 0 00:01:37  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :     0.67        1         1 
+	   Disk (KB)            :     1           1    853015 
+	   Memory (MB)          :  8708           1       100 
+
+	Job terminated of its own accord at 2022-10-31T09:13:44Z.
+...
+000 (884202.000.000) 2022-10-31 10:31:09 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884202.000.000) 2022-10-31 10:31:11 Job executing on host: <192.168.30.5:9618?addrs=192.168.30.5-9618&alias=node30-5.wn.iihe.ac.be&noUDP&sock=startd_1845_1852>
+...
+006 (884202.000.000) 2022-10-31 10:31:19 Image size of job updated: 452204
+	96  -  MemoryUsage of job (MB)
+	97844  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 10:36:19 Image size of job updated: 7175372
+	6586  -  MemoryUsage of job (MB)
+	6744052  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 10:41:20 Image size of job updated: 7875456
+	7381  -  MemoryUsage of job (MB)
+	7558096  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 10:46:20 Image size of job updated: 8696828
+	8181  -  MemoryUsage of job (MB)
+	8377016  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 10:51:20 Image size of job updated: 9519444
+	8987  -  MemoryUsage of job (MB)
+	9202516  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 10:56:22 Image size of job updated: 10345696
+	9796  -  MemoryUsage of job (MB)
+	10030644  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 11:01:22 Image size of job updated: 11134348
+	10561  -  MemoryUsage of job (MB)
+	10814416  -  ResidentSetSize of job (KB)
+...
+006 (884202.000.000) 2022-10-31 11:02:40 Image size of job updated: 11316776
+	10561  -  MemoryUsage of job (MB)
+	10814424  -  ResidentSetSize of job (KB)
+...
+005 (884202.000.000) 2022-10-31 11:02:41 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:28:31, Sys 0 00:01:47  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:28:31, Sys 0 00:01:47  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :     0.98        1         1 
+	   Disk (KB)            :     2           2    839894 
+	   Memory (MB)          : 10561           1       100 
+
+	Job terminated of its own accord at 2022-10-31T10:02:40Z.
+...
+000 (884261.000.000) 2022-10-31 22:05:12 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884261.000.000) 2022-10-31 22:05:23 Job executing on host: <192.168.30.7:9618?addrs=192.168.30.7-9618&alias=node30-7.wn.iihe.ac.be&noUDP&sock=startd_1781_3243>
+...
+006 (884261.000.000) 2022-10-31 22:05:32 Image size of job updated: 130100
+	96  -  MemoryUsage of job (MB)
+	97776  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:10:33 Image size of job updated: 7119316
+	6399  -  MemoryUsage of job (MB)
+	6551636  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:15:34 Image size of job updated: 7522316
+	7018  -  MemoryUsage of job (MB)
+	7185572  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:20:34 Image size of job updated: 8171896
+	7648  -  MemoryUsage of job (MB)
+	7831260  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:25:35 Image size of job updated: 8776480
+	8164  -  MemoryUsage of job (MB)
+	8359608  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:30:36 Image size of job updated: 9325296
+	8475  -  MemoryUsage of job (MB)
+	8677956  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:35:36 Image size of job updated: 9846608
+	8657  -  MemoryUsage of job (MB)
+	8864472  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:40:37 Image size of job updated: 10327068
+	8962  -  MemoryUsage of job (MB)
+	9176564  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:45:38 Image size of job updated: 10855968
+	9090  -  MemoryUsage of job (MB)
+	9307720  -  ResidentSetSize of job (KB)
+...
+006 (884261.000.000) 2022-10-31 22:50:16 Image size of job updated: 11325440
+	9090  -  MemoryUsage of job (MB)
+	9307720  -  ResidentSetSize of job (KB)
+...
+005 (884261.000.000) 2022-10-31 22:50:16 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 00:35:49, Sys 0 00:02:09  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 00:35:49, Sys 0 00:02:09  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :     0.86        1         1 
+	   Disk (KB)            :     2           2    846839 
+	   Memory (MB)          :  9090           1       100 
+
+	Job terminated of its own accord at 2022-10-31T21:50:16Z.
+...
+000 (884275.000.000) 2022-11-01 10:27:20 Job submitted from host: <192.168.10.147:9618?addrs=192.168.10.147-9618&alias=schedd03.wn.iihe.ac.be&noUDP&sock=schedd_29690_72ef>
+...
+001 (884275.000.000) 2022-11-01 10:27:43 Job executing on host: <192.168.50.5:9618?addrs=192.168.50.5-9618&alias=node50-5.wn.iihe.ac.be&noUDP&sock=startd_1621_731c>
+...
+006 (884275.000.000) 2022-11-01 10:27:52 Image size of job updated: 127100
+	93  -  MemoryUsage of job (MB)
+	94936  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 10:32:53 Image size of job updated: 4150700
+	3719  -  MemoryUsage of job (MB)
+	3807788  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 10:37:53 Image size of job updated: 7175312
+	6559  -  MemoryUsage of job (MB)
+	6715476  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 10:42:54 Image size of job updated: 7447592
+	6937  -  MemoryUsage of job (MB)
+	7102784  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 10:47:55 Image size of job updated: 7841584
+	7321  -  MemoryUsage of job (MB)
+	7496272  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 10:52:55 Image size of job updated: 8233696
+	7701  -  MemoryUsage of job (MB)
+	7885700  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 10:57:55 Image size of job updated: 8609872
+	8080  -  MemoryUsage of job (MB)
+	8273180  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:02:56 Image size of job updated: 9002284
+	8462  -  MemoryUsage of job (MB)
+	8664512  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:07:56 Image size of job updated: 9342036
+	8793  -  MemoryUsage of job (MB)
+	9003140  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:12:56 Image size of job updated: 9572028
+	9017  -  MemoryUsage of job (MB)
+	9232452  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:17:58 Image size of job updated: 9799296
+	9238  -  MemoryUsage of job (MB)
+	9458780  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:22:58 Image size of job updated: 10024036
+	9462  -  MemoryUsage of job (MB)
+	9689016  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:27:58 Image size of job updated: 10242824
+	9654  -  MemoryUsage of job (MB)
+	9885108  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:32:59 Image size of job updated: 10469360
+	9877  -  MemoryUsage of job (MB)
+	10113228  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:38:00 Image size of job updated: 10688128
+	10091  -  MemoryUsage of job (MB)
+	10333000  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:43:00 Image size of job updated: 10962604
+	10339  -  MemoryUsage of job (MB)
+	10586276  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:48:01 Image size of job updated: 11135108
+	10526  -  MemoryUsage of job (MB)
+	10778444  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:53:02 Image size of job updated: 11274948
+	10661  -  MemoryUsage of job (MB)
+	10916520  -  ResidentSetSize of job (KB)
+...
+006 (884275.000.000) 2022-11-01 11:57:38 Image size of job updated: 11397996
+	10661  -  MemoryUsage of job (MB)
+	10916520  -  ResidentSetSize of job (KB)
+...
+005 (884275.000.000) 2022-11-01 11:57:39 Job terminated.
+	(1) Normal termination (return value 0)
+		Usr 0 01:24:56, Sys 0 00:02:26  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+		Usr 0 01:24:56, Sys 0 00:02:26  -  Total Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Total Local Usage
+	0  -  Run Bytes Sent By Job
+	0  -  Run Bytes Received By Job
+	0  -  Total Bytes Sent By Job
+	0  -  Total Bytes Received By Job
+	Partitionable Resources :    Usage  Request Allocated 
+	   Cpus                 :     0.99        1         1 
+	   Disk (KB)            :     2           2    844880 
+	   Memory (MB)          : 10661           1       100 
+
+	Job terminated of its own accord at 2022-11-01T10:57:38Z.
+...

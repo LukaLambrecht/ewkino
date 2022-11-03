@@ -44,7 +44,7 @@ void determineMCChargeFlipRate( const std::string& year,
     //const std::vector< double > etaBins = { 0., 0.8, 1.442, 2.5 };
     // for syncing with TT:
     const std::vector< double > ptBins = {10., 30., 45., 65., 100., 200.};
-    const std::vector< double > etaBins = { 0., 0.4, 0.8, 1.1, 1.4, 1.6, 1.9, 2.2, 2.5 };
+    const std::vector< double > etaBins = { 0., 0.4, 0.8, 1.1, 1.4442, 1.566, 1.9, 2.2, 2.5 };
 
     // initialize 2D histogram for numerator
     std::string numerator_name = "chargeFlipRate_numerator_" + flavour + "_" + year;
