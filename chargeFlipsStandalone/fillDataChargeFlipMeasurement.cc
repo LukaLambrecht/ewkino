@@ -21,6 +21,7 @@ Perform a charge flip measurement in data
 #include "../Tools/interface/mt2.h"
 #include "../Tools/interface/stringTools.h"
 #include "../Event/interface/Event.h"
+#include "../Event/interface/EventTags.h"
 #include "../plotting/interface/tdrStyle.h"
 #include "../plotting/interface/plotCode.h"
 
@@ -51,9 +52,9 @@ Double_t        _lECorr[nL_max];
 UInt_t          _lFlavor[nL_max];
 Int_t           _lCharge[nL_max];
 Bool_t          _lIsPrompt[nL_max];
-Int_t           _lMatchPdgId[nL_max];
-Int_t           _lMatchCharge[nL_max];
-Int_t           _lMomPdgId[nL_max];
+//Int_t           _lMatchPdgId[nL_max];
+//Int_t           _lMatchCharge[nL_max];
+//Int_t           _lMomPdgId[nL_max];
 Bool_t          isEE;
 Bool_t          isEMu;
 Bool_t          isMuMu;
@@ -86,9 +87,9 @@ TBranch        *b__lECorr;
 TBranch        *b__lFlavor;
 TBranch        *b__lCharge;
 TBranch        *b__lIsPrompt;
-TBranch        *b__lMatchPdgId;
-TBranch        *b__lMatchCharge;
-TBranch        *b__lMomPdgId;
+//TBranch        *b__lMatchPdgId;
+//TBranch        *b__lMatchCharge;
+//TBranch        *b__lMomPdgId;
 TBranch         *b_isEE;
 TBranch         *b_isEMu;
 TBranch         *b_isMuMu;
@@ -120,11 +121,12 @@ void setBranchAddresses( TreeReader treeReader ){
     treeReader._currentTreePtr->SetBranchAddress("_lECorr", _lECorr, &b__lECorr);
     treeReader._currentTreePtr->SetBranchAddress("_lFlavor", _lFlavor, &b__lFlavor);
     treeReader._currentTreePtr->SetBranchAddress("_lCharge", _lCharge, &b__lCharge);
-    treeReader._currentTreePtr->SetBranchAddress("_weight", &_weight, &b__weight);
-    treeReader._currentTreePtr->SetBranchAddress("_lIsPrompt", _lIsPrompt, &b__lIsPrompt);
-    treeReader._currentTreePtr->SetBranchAddress("_lMatchPdgId", _lMatchPdgId, &b__lMatchPdgId);
-    treeReader._currentTreePtr->SetBranchAddress("_lMatchCharge", _lMatchCharge, &b__lMatchCharge);
-    treeReader._currentTreePtr->SetBranchAddress("_lMomPdgId",  _lMomPdgId, &b__lMomPdgId);
+//    treeReader._currentTreePtr->SetBranchAddress("_weight", &_weight, &b__weight);
+//    treeReader._currentTreePtr->SetBranchAddress("_lIsPrompt", _lIsPrompt, &b__lIsPrompt);
+//
+//    treeReader._currentTreePtr->SetBranchAddress("_lMatchPdgId", _lMatchPdgId, &b__lMatchPdgId);
+//    treeReader._currentTreePtr->SetBranchAddress("_lMatchCharge", _lMatchCharge, &b__lMatchCharge);
+//    treeReader._currentTreePtr->SetBranchAddress("_lMomPdgId",  _lMomPdgId, &b__lMomPdgId);
     treeReader._currentTreePtr->SetBranchAddress("isEE",  &isEE, &b_isEE);
     treeReader._currentTreePtr->SetBranchAddress("isEMu",  &isEMu, &b_isEMu);
     treeReader._currentTreePtr->SetBranchAddress("isMuMu",  &isMuMu, &b_isMuMu);
@@ -182,6 +184,36 @@ std::vector< double > computeVariables(){
     };
 }
 
+bool eventIsNew(  const long unsigned runNumber, const long unsigned luminosityBlock, const long unsigned eventNumber, std::set< EventTags >& usedEventTags ){
+
+    //search set for the current event 
+    auto tagIt = usedEventTags.find( EventTags(runNumber, luminosityBlock, eventNumber) );
+    
+    //continue if event with the same tags was seen before
+    if( tagIt != usedEventTags.end() ){
+        return false;
+    }    
+    //add unseen events to the set 
+    usedEventTags.emplace( EventTags(runNumber, luminosityBlock, eventNumber) ); 
+    return true;
+    }
+
+
+std::shared_ptr< TH2D > readChargeFlipMap( const std::string& year , const std::string& flavour){
+    TFile* frFile;
+    if(flavour == "electron"){
+    frFile = TFile::Open( ("chargeFlipMaps/chargeFlipMap_MC_electron_" + year + ".root" ).c_str() );
+    } else{
+    frFile = TFile::Open( ("chargeFlipMaps/chargeFlipMap_MC_muon_" + year + ".root" ).c_str() );
+    }
+    std::shared_ptr< TH2D > frMap( dynamic_cast< TH2D* >(
+        frFile->Get( ( "chargeFlipRate_electron_" + year ).c_str() ) ) );
+    frMap->SetDirectory( gROOT );
+    frFile->Close();
+    return frMap;
+}
+
+
 
 void deriveChargeFlipCorrections( const std::string& year,
 				  const std::string& sampleListFile,
@@ -189,12 +221,14 @@ void deriveChargeFlipCorrections( const std::string& year,
 				  const long nEntries ){
 
     // read MC charge-flip maps
-    std::string cfMapFileName = "chargeFlipMaps/chargeFlipMap_MC_electron" + year + ".root";
-    TFile* chargeFlipMapFile = TFile::Open( ( cfMapFileName ).c_str() );
-    std::shared_ptr< TH2 > chargeFlipMap_MC( dynamic_cast< TH2* >( 
-    chargeFlipMapFile->Get( ( "chargeFlipRate_electron_" + year ).c_str() ) ) );
-    chargeFlipMap_MC->SetDirectory( gROOT );
-    chargeFlipMapFile->Close();
+    //std::string cfMapFileName = "chargeFlipMaps/chargeFlipMap_MC_electron_" + year + ".root";
+    //TFile* chargeFlipMapFile = TFile::Open( ( cfMapFileName ).c_str() );
+    //std::shared_ptr< TH2 > chargeFlipMap_MC( dynamic_cast< TH2* >( 
+    //chargeFlipMapFile->Get( ( "chargeFlipRate_electron_" + year ).c_str() ) ) );
+    //chargeFlipMap_MC->SetDirectory( gROOT );
+    //chargeFlipMapFile->Close();
+
+    std::shared_ptr< TH2D > chargeFlipMap_MC = readChargeFlipMap( year, "electron" );
 
     // initialize histograms for each contribution
     std::vector< std::string > contributions = { "Data", "Charge-flips", "Nonprompt", "Prompt" };
@@ -208,11 +242,18 @@ void deriveChargeFlipCorrections( const std::string& year,
     }
     
     // make TreeReader and loop over samples
+    std::set< EventTags > usedEventTags;
     TreeReader treeReader( sampleListFile, sampleDirectory );
     for( unsigned i = 0; i < treeReader.numberOfSamples(); ++i ){
         treeReader.initSample(false, false);
         setBranchAddresses(treeReader);
 
+        //add MC branches if MC file
+        treeReader._currentTreePtr->GetEntry(0);
+        if( _runNb == 1){
+        treeReader._currentTreePtr->SetBranchAddress("_weight", &_weight, &b__weight);
+        treeReader._currentTreePtr->SetBranchAddress("_lIsPrompt", _lIsPrompt, &b__lIsPrompt);
+        }
 	// loop over entries
         long unsigned numberOfEntries = treeReader.numberOfEntries();
         if( nEntries>0 && (unsigned)nEntries<numberOfEntries ){
@@ -222,17 +263,18 @@ void deriveChargeFlipCorrections( const std::string& year,
 
 	    // build event
             treeReader._currentTreePtr->GetEntry(entry);
-
             // apply selection (already made in Gianny's skims)
             //if( ! chargeFlips::passChargeFlipEventSelection( event, true, true, true) ) continue;
 
             // apply further selections
             if( l1_pt < 25. ) continue;
             if( l2_pt < 15. ) continue;
+            //if data event is double we can skip
+            if( _runNb != 1 && !eventIsNew( _runNb, _lumiBlock, _eventNb, usedEventTags ) )continue;
 //!!!         //if( !( event.passTriggers_e() || event.passTriggers_ee() ) ) continue;
     
 	    // find if leptons are same sign
-            double weight = _weight;                                                                 //!!!
+            double weight = 1.; 
             bool isSameSign = !(isOS);
             std::string contributionName;
 
@@ -240,14 +282,18 @@ void deriveChargeFlipCorrections( const std::string& year,
 	    // same sign data
             if( _runNb != 1 && isSameSign ){//( event.isData() && isSameSign ){
                 contributionName = "Data";
+                weight = 1.;
 	    // opposite sign data (-> multiply by charge flip weight)
             } else if( _runNb != 1 ){
                 contributionName = "Charge-flips";
                 bool electron = true; //muon not yet supported, no real need for now
-                weight *= chargeFlips::chargeFlipWeight( _lFlavor[l1],_lFlavor[l2], _lPt[l1], _lPt[l2], _lEta[l1], _lEta[l2], electron, chargeFlipMap_MC );
-	    // same sign MC
+                weight = chargeFlips::chargeFlipWeight( _lFlavor[l1],_lFlavor[l2], _lPt[l1], _lPt[l2],fabs( _lEta[l1]), fabs(_lEta[l2]), electron, chargeFlipMap_MC );
+                std::cerr << weight << "\n";
+                if( weight == -1){weight = 0;}
+                // same sign MC
             } else if( isSameSign ){
                 bool isPrompt = true;
+                weight = _weight;
                 if( !(_lIsPrompt[l2]) || !(_lIsPrompt[l1]) ){
                     isPrompt = false;
                     break;
@@ -307,14 +353,18 @@ void deriveChargeFlipCorrections( const std::string& year,
     std::string header;
     if( year == "2016" ){
 	header = "35.9 fb^{-1}";
-    } else if( year == "2017" ){
+    } else if( year == "2016PreVFP" ){
+        header = "19.5 fb^{-1}";
+    }else if( year == "2016PostVFP" ){
+        header = "16.8 fb^{-1}";
+    }else if( year == "2017" ){
 	header = "41.5 fb^{-1}";
     } else{
 	header = "59.7 fb^{-1}";
     }
 
     // make closure plots before applying the scale-factor
-    std::string outputDirectoryBeforeSF = ( "closurePlots_chargeFlips_data_beforeSF_" + year );
+    std::string outputDirectoryBeforeSF = ( "~/public_html/chargeFlipMaps/closureData/beforeSF_" + year );
     systemTools::makeDirectory( outputDirectoryBeforeSF );
     for( size_t dist = 0; dist < histInfoVector.size(); ++dist ){
         TH1D* predictedHistograms[3] = { histogramMap.at( "Charge-flips" )[ dist ].get(), 
@@ -332,7 +382,7 @@ void deriveChargeFlipCorrections( const std::string& year,
     }
 
     // make closure plots after applying the scale-factor
-    std::string outputDirectoryAfterSF = ( "closurePlots_chargeFlips_data_afterSF_" + year );
+    std::string outputDirectoryAfterSF = ( "~/public_html/chargeFlipMaps/closureData/afterSF_" + year );
     systemTools::makeDirectory( outputDirectoryAfterSF );
     for( size_t dist = 0; dist < histInfoVector.size(); ++dist ){
 
