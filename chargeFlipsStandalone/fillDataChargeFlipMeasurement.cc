@@ -29,6 +29,14 @@ Perform a charge flip measurement in data
 #include "../chargeFlips/interface/chargeFlipSelection.h"
 #include "../chargeFlips/interface/chargeFlipTools.h"
 
+#include <map>
+
+std::map<std::string, int> lumis = {
+  {"2016PreVFP", 19.520},
+  {"2016PostVFP", 16.810},
+  {"2017", 41.480},
+  {"2018", 59.830}
+};
 
 // declare variables
 static const unsigned nL_max = 20;
@@ -37,6 +45,7 @@ ULong64_t         _runNb;
 ULong64_t         _lumiBlock;
 ULong64_t         _eventNb;
 Double_t        _weight;
+Float_t        genWeight;
 UInt_t          _nL;
 UInt_t          _nMu;
 UInt_t          _nEle;
@@ -72,6 +81,7 @@ TBranch         *b__runNb;
 TBranch         *b__lumiBlock;
 TBranch         *b__eventNb;
 TBranch        *b__weight;
+TBranch        *b_genWeight;
 TBranch        *b__nL;
 TBranch        *b__nMu;
 TBranch        *b__nEle;
@@ -252,6 +262,7 @@ void deriveChargeFlipCorrections( const std::string& year,
         treeReader._currentTreePtr->GetEntry(0);
         if( _runNb == 1){
         treeReader._currentTreePtr->SetBranchAddress("_weight", &_weight, &b__weight);
+        treeReader._currentTreePtr->SetBranchAddress("genWeight", &genWeight, &b_genWeight);
         treeReader._currentTreePtr->SetBranchAddress("_lIsPrompt", _lIsPrompt, &b__lIsPrompt);
         }
 	// loop over entries
@@ -269,8 +280,9 @@ void deriveChargeFlipCorrections( const std::string& year,
             // apply further selections
             if( l1_pt < 25. ) continue;
             if( l2_pt < 15. ) continue;
+            
             //if data event is double we can skip
-            if( _runNb != 1 && !eventIsNew( _runNb, _lumiBlock, _eventNb, usedEventTags ) )continue;
+            if(_runNb != 1 && !eventIsNew( _runNb, _lumiBlock, _eventNb, usedEventTags ) )continue;
 //!!!         //if( !( event.passTriggers_e() || event.passTriggers_ee() ) ) continue;
     
 	    // find if leptons are same sign
@@ -280,28 +292,53 @@ void deriveChargeFlipCorrections( const std::string& year,
 
 	    // determine correct category
 	    // same sign data
-            if( _runNb != 1 && isSameSign ){//( event.isData() && isSameSign ){
+            if( _runNb != 1 && isSameSign && (_lFlavor[l1]==0 && _lFlavor[l2] == 0) && _lFlavor[l1]!=2 && _lFlavor[l2] != 2){//( event.isData() && isSameSign ){
                 contributionName = "Data";
                 weight = 1.;
 	    // opposite sign data (-> multiply by charge flip weight)
-            } else if( _runNb != 1 ){
+            } else if( _runNb != 1 && _lFlavor[l1] == 0 && _lFlavor[l2] == 0){
                 contributionName = "Charge-flips";
                 bool electron = true; //muon not yet supported, no real need for now
                 weight = chargeFlips::chargeFlipWeight( _lFlavor[l1],_lFlavor[l2], _lPt[l1], _lPt[l2],fabs( _lEta[l1]), fabs(_lEta[l2]), electron, chargeFlipMap_MC );
-                std::cerr << weight << "\n";
-                if( weight == -1){weight = 0;}
+                //std::cerr << weight << "\n";
+                if( weight == -1){
+                    weight = 0;
+                    std::cerr << "flavors" << "\n";
+                    std::cerr << _lFlavor[l1] << "\n";
+                    std::cerr << _lFlavor[l2] << "\n";
+                    std::cerr << "pts" << "\n";
+                    std::cerr << _lPt[l1] << "\n";
+                    std::cerr << _lPt[l2] << "\n";
+                    std::cerr << "etas" << "\n";
+                    std::cerr << fabs( _lEta[l1]) << "\n";
+                    std::cerr << fabs( _lEta[l2]) << "\n";
+                }
                 // same sign MC
-            } else if( isSameSign ){
+            } else if( isSameSign && (_lFlavor[l1]==0 && _lFlavor[l2] == 0) && _lFlavor[l1] != 2 && _lFlavor[l2] != 2){
                 bool isPrompt = true;
-                weight = _weight;
+                int lumi = lumis.find(year)->second;
+                weight = genWeight*lumi;
                 if( !(_lIsPrompt[l2]) || !(_lIsPrompt[l1]) ){
                     isPrompt = false;
-                    break;
+                    //break;
                 }
                 if( isPrompt ){
+                    //std::cerr << "prompt!" << "\n";
                     contributionName = "Prompt";
                 } else {
                     contributionName = "Nonprompt";
+                    //std::cerr << "flavors" << "\n";
+                    //std::cerr << _lFlavor[l1] << "\n";
+                    //std::cerr << _lFlavor[l2] << "\n";
+                    //std::cerr << "pts" << "\n";
+                    //std::cerr << _lPt[l1] << "\n";
+                    //std::cerr << _lPt[l2] << "\n";
+                    //std::cerr << "etas" << "\n";
+                    //std::cerr << fabs( _lEta[l1]) << "\n";
+                    //std::cerr << fabs( _lEta[l2]) << "\n";
+                    //std::cerr << "who is it" << "\n";
+                    //std::cerr << _lIsPrompt[l1] << "\n";
+                    //std::cerr << _lIsPrompt[l2] << "\n";
                 }
 
             // opposite sign MC events (-> skip)
@@ -364,7 +401,7 @@ void deriveChargeFlipCorrections( const std::string& year,
     }
 
     // make closure plots before applying the scale-factor
-    std::string outputDirectoryBeforeSF = ( "~/public_html/chargeFlipMaps/closureData/beforeSF_" + year );
+    std::string outputDirectoryBeforeSF = ( "~/public_html/chargeFlipMaps/closureDatatest/beforeSF_" + year );
     systemTools::makeDirectory( outputDirectoryBeforeSF );
     for( size_t dist = 0; dist < histInfoVector.size(); ++dist ){
         TH1D* predictedHistograms[3] = { histogramMap.at( "Charge-flips" )[ dist ].get(), 
@@ -374,15 +411,15 @@ void deriveChargeFlipCorrections( const std::string& year,
 	plotDataVSMC( histogramMap.at( "Data" )[ dist ].get(), predictedHistograms, 
 		      &contributions[0], 3, stringTools::formatDirectoryName( outputDirectoryBeforeSF ) 
 		      + histInfoVector[ dist ].name() + "_closureTest_chargeFlips_data_beforeSF_" 
-		      + year + ".pdf", "", false, false, header );
+		      + year + ".pdf", "ChargeMisId", false, false, header );
 	plotDataVSMC( histogramMap.at( "Data" )[ dist ].get(), predictedHistograms, 
 		      &contributions[0], 3, stringTools::formatDirectoryName( outputDirectoryBeforeSF ) 
 		      + histInfoVector[ dist ].name() + "_closureTest_chargeFlips_data_beforeSF_" 
-		      + year + "_log.pdf", "", true, false, header );
+		      + year + "_log.pdf", "ChargeMisId", true, false, header );
     }
 
     // make closure plots after applying the scale-factor
-    std::string outputDirectoryAfterSF = ( "~/public_html/chargeFlipMaps/closureData/afterSF_" + year );
+    std::string outputDirectoryAfterSF = ( "~/public_html/chargeFlipMaps/closureDatatest/afterSF_" + year );
     systemTools::makeDirectory( outputDirectoryAfterSF );
     for( size_t dist = 0; dist < histInfoVector.size(); ++dist ){
 
@@ -399,14 +436,14 @@ void deriveChargeFlipCorrections( const std::string& year,
             systUnc->SetBinContent( b , systUnc->GetBinContent(b)*0.2 );
         }
 
+	plotDataVSMC( histogramMap.at( "Data" )[ dist ].get(), predictedHistograms,
+		      &contributions[0], 3, stringTools::formatDirectoryName( outputDirectoryAfterSF ) 
+		      + histInfoVector[ dist ].name() + "_closureTest_chargeFlips_data_afterSF_" 
+		      + year + ".pdf", "ChargeMisId", false, false, header, systUnc);
 	plotDataVSMC( histogramMap.at( "Data" )[ dist ].get(), predictedHistograms, 
 		      &contributions[0], 3, stringTools::formatDirectoryName( outputDirectoryAfterSF ) 
 		      + histInfoVector[ dist ].name() + "_closureTest_chargeFlips_data_afterSF_" 
-		      + year + ".pdf", "", false, false, header, systUnc );
-	plotDataVSMC( histogramMap.at( "Data" )[ dist ].get(), predictedHistograms, 
-		      &contributions[0], 3, stringTools::formatDirectoryName( outputDirectoryAfterSF ) 
-		      + histInfoVector[ dist ].name() + "_closureTest_chargeFlips_data_afterSF_" 
-		      + year + "_log.pdf", "", true, false, header, systUnc );
+		      + year + "_log.pdf", "ChargeMisId", true, false, header, systUnc );
     }
 }
 

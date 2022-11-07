@@ -20,20 +20,20 @@ if len(sys.argv)>1:
   inputfiles = sys.argv[1:]
 else: 
   inputfiles = ([f for f in os.listdir(os.getcwd()) 
-         if ('closurePlots_MC' in f and f[-5:]=='.root') ])
+         if ('closurePlotsv2_MC' in f and f[-5:]=='.root') ])
 
 # loop over input files
 for f in inputfiles:
   print('now running on {}...'.format(f))
 
   # set output directory
-  outdir = "~/public_html/chargeFlipMaps/closure"#f.replace('.root','')
+  outdir = "~/public_html/chargeFlipMaps/closuretest"#f.replace('.root','')
   if not os.path.exists(outdir): os.makedirs(outdir)
 
   # determine instance properties from filename
   # (the filename is assumed to be of the following form: 
   # closurePlots_MC_<process>_<year>.root)
-  instancename = f.replace('closurePlots_MC_','').replace('.root','')
+  instancename = f.replace('closurePlotsv2_MC_','').replace('.root','')
   instanceparts = instancename.split('_')
   process = instanceparts[0]
   year = instanceparts[1]

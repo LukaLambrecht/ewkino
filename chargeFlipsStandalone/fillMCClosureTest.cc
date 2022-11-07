@@ -314,7 +314,7 @@ void closureTest_MC( const std::string& process,
     }
 
     // write file
-    std::string fileName = "closurePlots_MC_" + process + "_" + year + ".root";
+    std::string fileName = "closurePlotsv2_MC_" + process + "_" + year + ".root";
     TFile* outputFilePtr = TFile::Open( fileName.c_str(), "RECREATE" );
     outputFilePtr->cd();
     for( std::vector< HistInfo >::size_type v = 0; v < histInfoVec.size(); ++v ){

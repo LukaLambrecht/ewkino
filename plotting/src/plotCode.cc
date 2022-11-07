@@ -18,7 +18,7 @@
 #include "../../Tools/interface/stringTools.h"
 
 
-//fraction of height of canvas allocated to the ratio plot
+//set fraction of height of canvas allocated to the ratio plot
 constexpr double xPad = 0.25;
 
 
@@ -127,10 +127,20 @@ Color_t bkgColorFakeRate(const std::string bkgName){
 }
 
 
+Color_t bkgColorChMisId(const std::string bkgName){
+
+    if(bkgName=="Charge-flips") return kMagenta -7;
+    else if(bkgName=="Prompt") return kAzure + 2;
+    else if(bkgName=="Nonprompt") return kYellow - 9;
+    else return kBlack;
+
+}
+
+
 Color_t bkgColorGeneral(const bool reset = false){
     static unsigned counter = 0;
-    static const Color_t colors[9] = { kMagenta -7 , kBlue + 1, kRed - 7, 
-		    kGreen - 7, kMagenta + 3, kAzure + 1, kOrange + 6, kCyan + 1,kBlue -3 };
+    static const Color_t colors[9] = { kMagenta -7 , kBlue + 1, kRed - 7,
+                    kGreen - 7, kMagenta + 3, kAzure + 1, kOrange + 6, kCyan + 1,kBlue -3 };
     if(!reset){
         Color_t output = colors[counter];
         ++counter;
@@ -152,6 +162,8 @@ Color_t bkgColor(const std::string& bkgName, const std::string& analysis){
         return bkgColorEWKDilept(bkgName);
     } else if(analysis == "fakerate"){
 	return bkgColorFakeRate(bkgName);
+    } else if(analysis == "ChargeMisId"){
+        return bkgColorChMisId(bkgName);
     } else{
         return bkgColorGeneral();
     }

@@ -16,7 +16,7 @@ flavours = ['electron']
 # (only 'electron supported for now')
 runmode = 'condor'
 # (pick from 'condor' or 'local')
-nentries = -1
+nentries = 2000000
 # (number of entries to use per file)
 samplelistdirectory = os.path.abspath('../chargeFlips/sampleListsUL')
 # (see also below in loop to set the correct sample list name per flavour/year!)

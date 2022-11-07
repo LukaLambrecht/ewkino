@@ -29,18 +29,30 @@ double chargeFlips::chargeFlipWeight( const int& flavorl1, const int& flavorl2, 
     
     std::vector<int> needed_leptons;
     if(electron){ 
-        if(flavorl1 == 0){    
+        if(flavorl1 == 0 && flavorl2 == 0){    
             double flipRate = histogram::contentAtValues( chargeFlipMap.get(), ptl1, fabs(etal1) );
             summedProbabilities += flipRate / ( 1. - flipRate );
             multipliedProbabilities *= flipRate / ( 1. - flipRate );
          }
-         if(flavorl2 == 0){
+         if(flavorl2 == 0 && flavorl2 == 0){
             double flipRate = histogram::contentAtValues( chargeFlipMap.get(), ptl2, fabs(etal2) );
             summedProbabilities += flipRate / ( 1. - flipRate );
             multipliedProbabilities *= flipRate / ( 1. - flipRate );
          }
+         if(flavorl1 == 0 && flavorl2 != 0){
+             double flipRate = histogram::contentAtValues( chargeFlipMap.get(), ptl1, fabs(etal1) );
+             return flipRate / ( 1. - flipRate );
+         }
+         if(flavorl1 != 0 && flavorl2 == 0){
+             double flipRate = histogram::contentAtValues( chargeFlipMap.get(), ptl2, fabs(etal2) );
+             return flipRate / ( 1. - flipRate );
+         }
+         if(flavorl1 != 0 && flavorl2 != 0){
+             return 0;
+         }
     }
     else{
+        std::cout << "not complete!" << "/n";
         if(flavorl1 == 1){
             double flipRate = histogram::contentAtValues( chargeFlipMap.get(), ptl1, fabs(etal1) );
             summedProbabilities += flipRate / ( 1. - flipRate );
