@@ -33,7 +33,10 @@ namespace eventFlattening{
 				const bool doMVA = false,
 				TMVA::Reader* = nullptr);
     std::pair<double,double> pmzcandidates(Lepton&, Met&);
+    std::pair<double,double> pmzcandidates(const LorentzVector&, const LorentzVector&);
     std::pair<double,int> besttopcandidate(JetCollection&, Lepton&, Met&, double, double);
+    std::pair<double,int> besttopcandidate(const std::vector<LorentzVector>&, 
+	const LorentzVector&, const LorentzVector&, double, double);
 }
 
 #endif

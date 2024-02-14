@@ -567,25 +567,37 @@ std::pair<double,double> eventFlattening::pmzcandidates(Lepton& lW, Met& met){
     // this method returns two candidates for longitudinal component of missing momentum,
     // by imposing the W mass constraint on the system (lW,pmiss).
     
-    // first define all four-vector quantities
-    double El = lW.energy(); double plx = lW.px(); double ply = lW.py(); double plz = lW.pz();
-    double pmx = met.px(); double pmy = met.py(); 
+    // define lorentz vectors for lepton and met
+    LorentzVector lvec;
+    lvec.setPxPyPzE(lW.px(), lW.py(), lW.pz(), lW.energy());
+    LorentzVector metvec;
+    metvec.setPxPyPzE(met.px(), met.py(), 0., std::sqrt(met.px()*met.px()+met.py()*met.py()));
+    // call underlying function
+    return pmzcandidates(lvec, metvec);
+}
+
+std::pair<double,double> eventFlattening::pmzcandidates(
+    const LorentzVector& lep,
+    const LorentzVector& met){
+    // source object agnostic version of the above,
+    // can be used both at detector and at particle level
+
+    // initializations
     double mW = particle::mW;
     std::pair<double,double> pmz = {0,0};
-    
-    //std::cout<<"lepton: "<<El<<" "<<plx<<" "<<ply<<" "<<plz<<std::endl;
-    //std::cout<<"ptmiss: "<<pmx<<" "<<pmy<<std::endl;
-    
-    // then solve quadratic equation
+    double El = lep.energy();
+    double plx = lep.px();
+    double ply = lep.py();
+    double plz = lep.pz();
+    double pmx = met.px();
+    double pmy = met.py();
+    // solve quadratic equation
     double A = El*El - plz*plz;
     double B = -plz*(2*(plx*pmx+ply*pmy)+mW*mW);
     double C = El*El*(pmx*pmx+pmy*pmy) - std::pow(mW*mW/2,2) - std::pow(plx*pmx+ply*pmy,2);
     C += -mW*mW*(plx*pmx+ply*pmy);
     double discr = B*B - 4*A*C;
-    if(discr<0){
-        //std::cout<<"### WARNING ###: negative discriminant found."<<std::endl;
-        discr = 0;
-    }
+    if(discr<0) discr = 0;
     pmz.first = (-B + std::sqrt(discr))/(2*A);
     pmz.second = (-B - std::sqrt(discr))/(2*A);
     return pmz;
@@ -617,43 +629,75 @@ std::pair<double,int> eventFlattening::besttopcandidate(JetCollection& alljets, 
     // and all medium b-jets in the event.
     // The index of the jet that gives the best top mass is returned as well.
     
-    std::pair<double,int> res = {0.,0};
-    double bestmass = 0.;
-    double massdiff = fabs(particle::mTop-bestmass);
-    int bindex = -1;
-    // set lorentz vectors for lepton and neutrino
-    double metpx = met.px();
-    double metpy = met.py();  
-    LorentzVector nu1;
-    nu1.setPxPyPzE(metpx,metpy,pmz1,std::sqrt(metpx*metpx+metpy*metpy+pmz1*pmz1));
-    LorentzVector nu2;
-    nu2.setPxPyPzE(metpx,metpy,pmz2,std::sqrt(metpx*metpx+metpy*metpy+pmz2*pmz2));
-    LorentzVector lep;
-    lep.setPxPyPzE(lW.px(),lW.py(),lW.pz(),lW.energy());
-    // loop over jets
-    LorentzVector jet;
-    double mass = 0.;
+    // make lorentz vectors for lepton and met
+    LorentzVector lvec;
+    lvec.setPxPyPzE(lW.px(), lW.py(), lW.pz(), lW.energy());
+    LorentzVector metvec;
+    metvec.setPxPyPzE(met.px(), met.py(), 0, std::sqrt(met.px()*met.px()+met.py()*met.py()));
+    // make lorentz vectors for jets
+    // note: only b-tagged jets should be taken into account,
+    //       so we also need to keep a mapping from new indices (only b-tagged jets)
+    //       to old indices (all jets)
+    std::vector<LorentzVector> jets;
+    std::map<int, int> idxMap;
+    int counter = 0;
     for(JetCollection::const_iterator jIt = alljets.cbegin(); jIt != alljets.cend(); jIt++){
         Jet& jetobject = **jIt;
 	// consider only medium tagged b-jets
 	if(!jetobject.isBTaggedMedium()) continue;
+	// make a lorentz vector and add it
+	LorentzVector jet;
         jet.setPxPyPzE(jetobject.px(),jetobject.py(),jetobject.pz(),jetobject.energy());
-	// try neutrino hypothesis one
-        mass = (nu1 + lep + jet).mass();
-        if(fabs(particle::mTop-mass)<massdiff){
-            bestmass = mass;
-            massdiff = fabs(particle::mTop-mass);
-            bindex = jIt - alljets.cbegin();
+	jets.push_back(jet);
+	idxMap[counter] = jIt - alljets.cbegin();
+	counter++;
+    }
+    // call underlying function
+    std::pair<double,int> res = besttopcandidate(jets, lvec, metvec, pmz1, pmz2);
+    // correct the index
+    res.second = idxMap[res.second];
+    return res;   
+}
+
+std::pair<double,int> eventFlattening::besttopcandidate(
+    const std::vector<LorentzVector>& jets,
+    const LorentzVector& lepton,
+    const LorentzVector& met,
+    double pmz1, double pmz2 ){
+    // source object agnostic version of the above,
+    // can be used both at detector and at particle level
+
+    // initializations
+    std::pair<double,int> res = {0.,0};
+    double bestmass = 0.;
+    double massdiff = fabs(particle::mTop-bestmass);
+    int bjetidx = -1;
+    // make lorentz vectors for two neutrino hypotheses
+    double metpx = met.px();
+    double metpy = met.py();
+    LorentzVector nu1;
+    nu1.setPxPyPzE(metpx,metpy,pmz1,std::sqrt(metpx*metpx+metpy*metpy+pmz1*pmz1));
+    LorentzVector nu2;
+    nu2.setPxPyPzE(metpx,metpy,pmz2,std::sqrt(metpx*metpx+metpy*metpy+pmz2*pmz2));
+    // loop over jets
+    for(unsigned int jetidx=0; jetidx<jets.size(); jetidx++){
+	LorentzVector jet = jets[jetidx];
+        // try neutrino hypothesis one
+        double mass1 = (nu1 + lepton + jet).mass();
+        if(fabs(particle::mTop-mass1)<massdiff){
+            bestmass = mass1;
+            massdiff = fabs(particle::mTop-mass1);
+            bjetidx = jetidx;
         }
-	// try neutrino hypothesis two
-        mass = (nu2 + lep + jet).mass();
-        if(fabs(particle::mTop-mass)<massdiff){
-            bestmass = mass;
-            massdiff = fabs(particle::mTop-mass);
-            bindex = jIt - alljets.cbegin();
+        // try neutrino hypothesis two
+        double mass2 = (nu2 + lepton + jet).mass();
+        if(fabs(particle::mTop-mass2)<massdiff){
+            bestmass = mass2;
+            massdiff = fabs(particle::mTop-mass2);
+            bjetidx = jetidx;
         }
     }
     res.first = bestmass;
-    res.second = bindex;
-    return res;   
+    res.second = bjetidx;
+    return res;
 }   

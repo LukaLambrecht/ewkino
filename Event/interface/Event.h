@@ -12,7 +12,10 @@
 #include "JetInfo.h"
 #include "EventTags.h"
 #include "SusyMassInfo.h"
+#include "LeptonParticleLevelCollection.h"
+#include "JetParticleLevelCollection.h"
 #include "../../objects/interface/Met.h"
+#include "../../objects/interface/MetParticleLevel.h"
 #include "../../objects/interface/PhysicsObject.h"
 
 
@@ -35,7 +38,8 @@ class Event{
 		const bool readIndividualTriggers = false, 
 		const bool readIndividualMetFilters = false,
 		const bool readAllJECVariations = false,
-		const bool readGroupedJECVariations = false );
+		const bool readGroupedJECVariations = false,
+                const bool readParticleLevel = false );
         Event( const Event& );
         Event( Event&& ) noexcept;
 
@@ -53,6 +57,9 @@ class Event{
         EventTags& eventTags() const{ return *_eventTagsPtr; }
         GeneratorInfo& generatorInfo() const;
         SusyMassInfo& susyMassInfo() const;
+	LeptonParticleLevelCollection& leptonParticleLevelCollection() const;
+	JetParticleLevelCollection& jetParticleLevelCollection() const;
+	MetParticleLevel& metParticleLevel() const;
 
 	// return jet collection and met with varied JEC/JER/Uncl uncertainties
 	JetCollection getJetCollection( const std::string& variation ) const{ 
@@ -86,6 +93,10 @@ class Event{
         //user specified jet selection
         void selectJets( bool (&passSelection)( const Jet& ) ){ _jetCollectionPtr->selectObjects( passSelection ); }
 
+	// particle level jet selection and cleaning
+	void selectGoodParticleLevelJets() const;
+	void cleanParticleLevelJetsFromLeptons( const double coneSize = 0.4 ) const;
+
         //b-tag collections
         JetCollection looseBTagCollection() const{ return _jetCollectionPtr->looseBTagCollection(); }
         JetCollection mediumBTagCollection() const{ return _jetCollectionPtr->mediumBTagCollection(); }
@@ -99,6 +110,9 @@ class Event{
         void cleanElectronsFromFOMuons( const double coneSize = 0.05 ){ _leptonCollectionPtr->cleanElectronsFromFOMuons( coneSize ); }
         void cleanTausFromLooseLightLeptons( const double coneSize = 0.4 ){ _leptonCollectionPtr->cleanTausFromLooseLightLeptons( coneSize ); }
         void cleanTausFromFOLightLeptons( const double coneSize = 0.4 ){ _leptonCollectionPtr->cleanTausFromFOLightLeptons( coneSize ); }
+
+	// particle level leptons selection and cleaning
+	void selectGoodParticleLevelLeptons() const;
 
         //separate lepton flavor collections
         MuonCollection muonCollection() const{ return _leptonCollectionPtr->muonCollection(); }
@@ -251,6 +265,9 @@ class Event{
         EventTags* _eventTagsPtr = nullptr;
         GeneratorInfo* _generatorInfoPtr = nullptr;
         SusyMassInfo* _susyMassInfoPtr = nullptr;
+	LeptonParticleLevelCollection* _leptonParticleLevelCollectionPtr = nullptr;
+	JetParticleLevelCollection* _jetParticleLevelCollectionPtr = nullptr;
+	MetParticleLevel* _metParticleLevelPtr = nullptr;
         unsigned _numberOfVertices = 0;
         double _weight = 1;
 	double _scaledWeight = 1;
@@ -274,6 +291,13 @@ class Event{
         //check the presence of susy information
         bool hasSusyMassInfo() const{ return ( _susyMassInfoPtr != nullptr ); }
         void checkSusyMassInfo() const;
+
+	// check the presence of particle level information
+	bool hasParticleLevel() const{ 
+	    return ( _leptonParticleLevelCollectionPtr != nullptr
+		&& _jetParticleLevelCollectionPtr != nullptr
+		&& _metParticleLevelPtr != nullptr ); }
+	void checkParticleLevel() const;
 
 	Event variedLeptonCollectionEvent(
                     LeptonCollection (LeptonCollection::*variedCollection)() const ) const;

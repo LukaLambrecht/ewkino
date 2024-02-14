@@ -34,6 +34,8 @@ class TreeReader {
         static const unsigned nL_max = 20;
         static const unsigned nJets_max = 100;
         static const unsigned gen_nL_max = 20;
+	static const unsigned pl_nL_max = 10;
+	static const unsigned pl_nJet_max = 10;
 	// global event variables and weights
         ULong_t         _runNb;
         ULong_t         _lumiBlock;
@@ -63,6 +65,22 @@ class TreeReader {
         Bool_t          _gen_lIsPrompt[gen_nL_max];   
         UInt_t          _ttgEventType;
         UInt_t          _zgEventType;
+	// particle level particles
+	Double_t	_pl_met;
+	Double_t	_pl_metPhi;
+	UInt_t		_pl_nL;
+	Double_t	_pl_lPt[pl_nL_max];
+	Double_t	_pl_lEta[pl_nL_max];
+	Double_t	_pl_lPhi[pl_nL_max];
+	Double_t	_pl_lE[pl_nL_max];
+	UInt_t		_pl_lFlavor[pl_nL_max];
+	Int_t		_pl_lCharge[pl_nL_max];
+	UInt_t		_pl_nJets;
+	Double_t	_pl_jetPt[pl_nJet_max];
+	Double_t	_pl_jetEta[pl_nJet_max];
+	Double_t	_pl_jetPhi[pl_nJet_max];
+	Double_t	_pl_jetE[pl_nJet_max];
+	UInt_t		_pl_jetHadronFlavor[pl_nJet_max];
 	// triggers and filters
         Bool_t          _passTrigger_e;
         Bool_t          _passTrigger_ee;
@@ -293,15 +311,18 @@ class TreeReader {
 			    const bool readIndividualTriggers = false, 
 			    const bool readIndividualMetFilters = false,
 			    const bool readAllJECVariations = false,
-			    const bool readGroupedJECVariations = false );
+			    const bool readGroupedJECVariations = false,
+			    const bool readParticleLevel = false );
         Event buildEvent( long unsigned, 
 			    const bool readIndividualTriggers = false, 
 			    const bool readIndividualMetFilters = false,
 			    const bool readAllJECVariations = false, 
-                            const bool readGroupedJECVariations = false );
+                            const bool readGroupedJECVariations = false,
+                            const bool readParticleLevel = false );
 
-        //check whether generator info is present in current tree
+        //check whether specifiec info is present in current tree
         bool containsGeneratorInfo() const;
+	bool containsParticleLevel() const;
 
         //check whether SUSY mass info is present in the current sample
 	// ( this is the case for SUSY signal scans )
@@ -419,6 +440,21 @@ class TreeReader {
         TBranch        *b__gen_lIsPrompt;   
         TBranch        *b__ttgEventType;
         TBranch        *b__zgEventType;
+	TBranch        *b__pl_met;
+	TBranch        *b__pl_metPhi;
+	TBranch        *b__pl_nL;
+	TBranch        *b__pl_lPt;
+	TBranch        *b__pl_lEta;
+	TBranch        *b__pl_lPhi;
+	TBranch        *b__pl_lE;
+	TBranch        *b__pl_lFlavor;
+	TBranch        *b__pl_lCharge;
+	TBranch        *b__pl_nJets;
+	TBranch        *b__pl_jetPt;
+	TBranch        *b__pl_jetEta;
+	TBranch        *b__pl_jetPhi;
+	TBranch        *b__pl_jetE;
+	TBranch        *b__pl_jetHadronFlavor;
         TBranch        *b__passTrigger_e;   
         TBranch        *b__passTrigger_ee;   
         TBranch        *b__passTrigger_eee;   
