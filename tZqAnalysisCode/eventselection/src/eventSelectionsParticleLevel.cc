@@ -115,5 +115,6 @@ std::tuple<int,std::string> eventSelectionsParticleLevel::pass_signalregion_tril
     Event& event){
     // copy of pass_signalregion_trilepton but with different return type
     // to allow cutflow studies
+    cleanLeptonsAndJets(event);
     return std::make_tuple(-1, "To do");
 }

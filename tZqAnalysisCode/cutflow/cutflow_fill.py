@@ -22,6 +22,7 @@ def make_cutflow_command( args ):
     cmd += ' {}'.format(args.variation)
     cmd += ' {}'.format(args.nevents)
     cmd += ' {}'.format(args.maxcutflowvalue)
+    cmd += ' {}'.format(args.do_particle_level)
     return cmd
 
 
@@ -35,6 +36,7 @@ if __name__=='__main__':
     parser.add_argument('-v', '--variation', default='nominal')
     parser.add_argument('-n', '--nevents', type=int, default=-1)
     parser.add_argument('-m', '--maxcutflowvalue', type=int, default=10)
+    parser.add_argument('--do_particle_level', default=False, action='store_true')
     parser.add_argument('--runmode', default='local', choices=['local', 'condor'])
     args = parser.parse_args()
     
