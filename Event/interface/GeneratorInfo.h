@@ -55,9 +55,11 @@ class GeneratorInfo{
 
     private:
         static constexpr unsigned maxNumberOfLheWeights = 148;
+	// warning: keep in sync with TreeReader
         unsigned _numberOfLheWeights;
         double _lheWeights[maxNumberOfLheWeights];
-        static constexpr unsigned maxNumberOfPsWeights = 14;
+        static constexpr unsigned maxNumberOfPsWeights = 46;
+	// warning: keep in sync with TreeReader
         unsigned _numberOfPsWeights;
         double _psWeights[maxNumberOfPsWeights];
         double _prefireWeight;

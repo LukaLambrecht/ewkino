@@ -103,6 +103,21 @@ bool LeptonParticleLevel::oppositeSignSameFlavor( const LeptonParticleLevel& lhs
 }
 
 
+// matching between particle level and detector level
+std::pair<unsigned int, double> LeptonParticleLevel::closestLeptonIdxAndDeltaR(const LeptonCollection& leptons) const{
+    unsigned int minidx = 99;
+    double mindr = 99;
+    for(unsigned int i=0; i<leptons.size(); i++){
+	double dr = deltaR(*this, leptons[i]);
+	if( dr<mindr ){
+	    minidx = i;
+	    mindr = dr;
+	}
+    }
+    return std::make_pair(minidx, mindr);
+}
+
+
 std::ostream& LeptonParticleLevel::print( std::ostream& os) const{
     PhysicsObject::print( os );
     os << " / charge = " << ( _charge > 0 ? "+" : "-" );

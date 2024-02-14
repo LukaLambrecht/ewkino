@@ -8,6 +8,7 @@ Definition of particle-level jets
 
 //include other parts of code 
 #include "PhysicsObject.h"
+#include "../../Event/interface/JetCollection.h"
 #include "../../TreeReader/interface/TreeReader.h"
 #include "../../Tools/interface/stringTools.h"
 
@@ -31,6 +32,9 @@ class JetParticleLevel : public PhysicsObject{
         unsigned hadronFlavor() const{ return _hadronFlavor; }
 	bool isBJet() const{ return _hadronFlavor==5; }
 	bool isGood() const;
+
+	// matching between particle level and detector level
+	std::pair<unsigned int, double> closestJetIdxAndDeltaR(const JetCollection& jets) const;
 
         virtual std::ostream& print( std::ostream& ) const override;
 

@@ -78,6 +78,21 @@ bool JetParticleLevel::isGood() const{
 }
 
 
+// matching between particle level and detector level
+std::pair<unsigned int, double> JetParticleLevel::closestJetIdxAndDeltaR(const JetCollection& jets) const{
+    unsigned int minidx = 99;
+    double mindr = 99;
+    for(unsigned int i=0; i<jets.size(); i++){
+        double dr = deltaR(*this, jets[i]);
+        if( dr<mindr ){
+            minidx = i;
+            mindr = dr;
+        }
+    }
+    return std::make_pair(minidx, mindr);
+}
+
+
 std::ostream& JetParticleLevel::print( std::ostream& os ) const{
     os << "Jet : ";
     PhysicsObject::print( os );

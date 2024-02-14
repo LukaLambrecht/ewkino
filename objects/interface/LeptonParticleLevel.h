@@ -12,6 +12,7 @@ Definition of particle-level leptons
 
 //include other parts of code 
 #include "PhysicsObject.h"
+#include "../../Event/interface/LeptonCollection.h"
 #include "../../TreeReader/interface/TreeReader.h"
 
 template< typename ObjectType > class PhysicsObjectCollection;
@@ -44,6 +45,9 @@ class LeptonParticleLevel : public PhysicsObject {
 	static bool sameSign( const LeptonParticleLevel&, const LeptonParticleLevel& );
 	static bool oppositeSign( const LeptonParticleLevel&, const LeptonParticleLevel& );
 	static bool oppositeSignSameFlavor( const LeptonParticleLevel&, const LeptonParticleLevel& );
+
+	// matching between particle level and detector level
+        std::pair<unsigned int, double> closestLeptonIdxAndDeltaR(const LeptonCollection& leptons) const;
 
         virtual std::ostream& print( std::ostream& os = std::cout ) const override;
 
