@@ -11,14 +11,14 @@ sys.path.append(os.path.abspath('../tools'))
 import histtools as ht
 import listtools as lt
 
-def findbytitle(histlist,title):
+def findbytitle(histlist, title):
     # find a histogram by its title, return the index or -1 if not found
     index = -1
     for i,hist in enumerate(histlist):
         if hist.GetTitle()==title: index = i
     return index
 
-def findbyname(histlist,tag):
+def findbyname(histlist, tag):
     indices = []
     for i,hist in enumerate(histlist):
 	if tag in hist.GetName():
@@ -33,16 +33,16 @@ def sethiststyle(hist, systematic):
     hist.SetLineWidth(2)
     sysname = systematic
     if('Up' in systematic):
-	hist.SetLineStyle(2)
+	hist.SetLineStyle(0)
 	sysname = systematic.replace('Up','')
     elif('Down' in systematic):
-	hist.SetLineStyle(0)
+	hist.SetLineStyle(2)
 	sysname = systematic.replace('Down','')
     elif('ShapeVar' in systematic):
 	sysname = systematic[:systematic.find('ShapeVar')+8]
     hist.SetLineColor( pt.getcolormap_systematics().get(sysname,ROOT.kBlack) )
     
-def getminmax(histlist,witherrors=False):
+def getminmax(histlist, witherrors=False):
     # get suitable minimum and maximum values for plotting a hist collection (not stacked)
     totmax = 0.
     totmin = 1.
@@ -56,8 +56,8 @@ def getminmax(histlist,witherrors=False):
 		downval = val - hist.GetBinError(i)
 	    if upval > totmax: totmax = upval
 	    if downval < totmin: totmin = downval
-    topmargin = (totmax-totmin)/2.
-    bottommargin = (totmax-totmin)/5.
+    topmargin = (totmax-totmin)/4.
+    bottommargin = (totmax-totmin)/8.
     return (totmin-bottommargin,totmax+topmargin)
 
 def histlisttotxt(histlist,txtfile):
@@ -70,16 +70,16 @@ def histlisttotxt(histlist,txtfile):
 	    toprint += '\n'
 	    txtf.write(toprint)
 
-def plotsystematics( mchistlist, systematiclist, figname,
+def plotsystematics( mchistlist, labellist, figname,
                      xaxtitle=None, xaxtitlesize=None, xaxtitleoffset=None,
                      yaxtitle=None, yaxtitlesize=None, yaxtitleoffset=None,
 		     relative=True, staterrors=False,
                      yaxrange=None,
                      extrainfos=[], infosize=None, infoleft=None, infotop=None,
-		     outtxtfile='' ):
+		     outtxtfile=None ):
     # input arguments:
     # - mchistlist: list of histograms with systematic variations
-    # - systematiclist: list of names of systematics,
+    # - labellist: list of names of systematics,
     #                   the length and order must correspond to mchistlist,
     #                   used for labels and styling
     
@@ -89,22 +89,23 @@ def plotsystematics( mchistlist, systematiclist, figname,
     ### define global parameters for size and positioning
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
     cheight = 600 # height of canvas
-    cwidth = 600 # width of canvas
+    cwidth = 800 # width of canvas
     # fonts and sizes:
     labelfont = 4; labelsize = 22
     axtitlefont = 4
-    if xaxtitlesize is None: xaxtitlesize = 22
-    if yaxtitlesize is None: yaxtitlesize = 22
+    if xaxtitlesize is None: xaxtitlesize = 25
+    if yaxtitlesize is None: yaxtitlesize = 25
+    legendfont = 4; legendsize = 10
     infofont = 4
     if infosize is None: infosize = 20
     # title offset
-    if yaxtitleoffset is None: yaxtitleoffset = 2
+    if yaxtitleoffset is None: yaxtitleoffset = 1.3
     if xaxtitleoffset is None: xaxtitleoffset = 1
     # margins:
     topmargin = 0.05
     bottommargin = 0.1
     leftmargin = 0.15
-    rightmargin = 0.25
+    rightmargin = 0.35
     # legend box
     plegendbox = [1-rightmargin+0.03,bottommargin+0.03,1-0.03,1-topmargin-0.03]
     # extra info box parameters
@@ -117,11 +118,11 @@ def plotsystematics( mchistlist, systematiclist, figname,
 	print('### ERROR ###: nominal histogram not found.')
 	return
     nominalhist = mchistlist[nominalindex]
-    nominallabel = systematiclist[nominalindex]
+    nominallabel = labellist[nominalindex]
     indices = list(range(len(mchistlist)))
     indices.remove(nominalindex)
     mchistlist = [mchistlist[i] for i in indices]
-    systematiclist = [systematiclist[i] for i in indices]
+    labellist = [labellist[i] for i in indices]
 
     ### copy nominal histogram to plot statistical uncertainties
     stathist = nominalhist.Clone()
@@ -135,7 +136,7 @@ def plotsystematics( mchistlist, systematiclist, figname,
     ht.cliphistogram(stathist)
     # systematic histograms
     for i,hist in enumerate(mchistlist):
-        sethiststyle(hist,systematiclist[i])
+        sethiststyle(hist, hist.GetTitle())
 	ht.cliphistogram(hist)
 
     ### rescale histograms in case of relative
@@ -150,13 +151,15 @@ def plotsystematics( mchistlist, systematiclist, figname,
 		    hist.SetBinContent(i,hist.GetBinContent(i)/nominalhist.GetBinContent(i))
     
     ### make legend for upper plot and add all histograms
-    legend = ROOT.TLegend(plegendbox[0],plegendbox[1],plegendbox[2],plegendbox[3])
+    legend = ROOT.TLegend(plegendbox[0], plegendbox[1],
+                          plegendbox[2], plegendbox[3])
     legend.SetFillStyle(0)
-    nentries = 0
     allJECHasLabel = False
     groupedJECHasLabel = False
     for i,hist in enumerate(mchistlist):
-	label = systematiclist[i]
+	label = labellist[i]
+        # avoid drawing labels set to None
+        if label is None: continue
 	# avoid drawing a legend entry for all shape variations
 	if('ShapeVar0' in label): label = label[:label.find('Var0')]
 	elif('ShapeVar' in label): continue
@@ -171,11 +174,12 @@ def plotsystematics( mchistlist, systematiclist, figname,
 		label = 'JECGrouped'
 		groupedJECHasLabel = True
 	    else: continue
-	if label[-2:]=='Up': label = '~Up'
-        legend.AddEntry(hist,label,"l")
-	nentries += 1
-    legend.AddEntry(nominalhist,nominallabel,"l")
+        # default case: add the label
+        legend.AddEntry(hist, label, "l")
+    legend.AddEntry(nominalhist, nominallabel, "l")
     legend.SetNColumns(1)
+    legend.SetTextFont(legendfont*10+3)
+    legend.SetTextSize(legendsize)
 
     ### make canvas and pads
     c1 = ROOT.TCanvas("c1","c1")
@@ -219,7 +223,7 @@ def plotsystematics( mchistlist, systematiclist, figname,
     # Y-axis layout
     yax = nominalhist.GetYaxis()
     yax.SetMaxDigits(3)
-    yax.SetNdivisions(8,4,0,ROOT.kTRUE)
+    yax.SetNdivisions(10,4,0,ROOT.kTRUE)
     yax.SetLabelFont(10*labelfont+3)
     yax.SetLabelSize(labelsize)
     if yaxtitle is not None:
@@ -261,5 +265,5 @@ def plotsystematics( mchistlist, systematiclist, figname,
     c1.SaveAs(figname+'.png')
     c1.SaveAs(figname+'.pdf')
     ### save txt files with values if requested
-    if len(outtxtfile)>0: histlisttotxt([nominalhist]+mchistlist,outtxtfile)
+    if outtxtfile is not None: histlisttotxt([nominalhist]+mchistlist, outtxtfile)
     return

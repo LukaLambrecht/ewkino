@@ -61,15 +61,15 @@ if __name__=="__main__":
     
   # parse arguments
   parser = argparse.ArgumentParser('Prepare systematic plots inputs')
-  parser.add_argument('--inputfile', required=True, type=os.path.abspath,
+  parser.add_argument('-i', '--inputfile', required=True, type=os.path.abspath,
                       help='Input file to start from, supposed to be an output file'
                           +' from runsystematics.cc')
-  parser.add_argument('--processes', required=True,
+  parser.add_argument('-p', '--processes', required=True,
                       help='Comma-separated list of process tags to take into account;'
                           +' use "all" to use all processes in the input file.')
-  parser.add_argument('--variables', required=True, type=os.path.abspath,
+  parser.add_argument('-v', '--variables', required=True, type=os.path.abspath,
                       help='Path to json file holding variable definitions.')
-  parser.add_argument('--outputdir', required=True, 
+  parser.add_argument('-o', '--outputdir', required=True, 
                       help='Directory where to store the output.')
   parser.add_argument('--includetags', default=None,
                       help='Comma-separated list of systematic tags to include')
@@ -244,12 +244,52 @@ if __name__=="__main__":
     extrainfos.append(pinfostr)
     for tag in extratags: extrainfos.append(tag)
 
+    # make labels
+    # (now hard-coded, maybe later replace by input json dict)
+    labellist = [hist.GetName().split(variable)[-1].strip('_') for hist in histlist]
+    for i, label in enumerate(labellist):
+        # format the systematic name
+        sys = label.replace('Down','').replace('Up','')
+        if sys=='fScale': sys = '#mu_{f}'
+        elif sys=='rScale': sys = '#mu_{r}'
+        elif sys=='rfScales': sys = '#mu_{r} + #mu_{f}'
+        elif sys=='pdfShapeEnv': sys = 'pdf envelope'
+        elif sys=='pdfShapeRMS': sys = 'pdf rms'
+        elif sys=='pdfShapeVar0':
+            labellist[i] = 'pdf variations'; continue
+        elif sys.startswith('pdfShapeVar'):
+            labellist[i] = None; continue
+        elif sys=='Uncl': sys = 'MET'
+        elif sys=='bTag_shape_cferr1': sys = 'b-tagging (cf-1)'
+        elif sys=='bTag_shape_cferr2': sys = 'b-tagging (cf-2)'
+        elif sys=='bTag_shape_lfstats1': sys = 'b-tagging (lfstats-1)'
+        elif sys=='bTag_shape_lfstats2': sys = 'b-tagging (lfstats-2)'
+        elif sys=='bTag_shape_hfstats1': sys = 'b-tagging (hfstats-1)'
+        elif sys=='bTag_shape_hfstats2': sys = 'b-tagging (hfstats-2)'
+        elif sys=='bTag_shape_lf': sys = 'b-tagging (lf-1)'
+        elif sys=='bTag_shape_hf': sys = 'b-tagging (hf-2)'
+        elif sys=='electronIDStat': sys = 'electron ID (stat)'
+        elif sys=='electronIDSyst': sys = 'electron ID (syst)'
+        elif sys=='muonIDStat': sys = 'muon ID (stat)'
+        elif sys=='muonIDSyst': sys = 'muon ID (syst)'
+        elif sys=='electronReco': sys = 'electron reco'
+        elif sys=='fsrShape': sys = 'FSR'
+        elif sys=='isrShape': sys = 'ISR'
+        elif sys=='qcdScalesShapeEnv': sys = '#mu_{r}, #mu_{f} (envelope)'
+        # format the label
+        if label[-4:]=='Down': label = sys + ' (#downarrow)'
+        elif label[-2:]=='Up': label = sys + ' (#uparrow)'
+        labellist[i] = label
+
+    # change histogram titles for correct style settings
+    for hist in histlist:
+        hist.SetTitle( hist.GetName().split(variable)[-1].strip('_') )
+
     # set plot properties
     figname = args.inputfile.split('/')[-1].replace('.root','')+'_var_'+variable 
     figname = os.path.join(args.outputdir,figname)
     yaxtitle = 'Events'
     relyaxtitle = 'Normalized'
-    labellist = [hist.GetName().split(variable)[-1].strip('_') for hist in histlist]
     plotsystematics(histlist, labellist, figname+'_abs', 
                     yaxtitle=yaxtitle, xaxtitle=xaxtitle,
                     relative=False, staterrors=True,
