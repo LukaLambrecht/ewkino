@@ -1,0 +1,8 @@
+# note: this file was created using ewkino/AnalysisCode/newcombine/topratio_calculator_meas.py
+#       on 27/07/2021 and copied here.
+#	it is supposed to be read by the function read_txt_file.py/readchanneltxt
+#       (copied from channel plotting functionality)
+tZq tZq 87.9065922 7.5125913 7.28974236 7.34328408969 5.98882459231
+tZq_top tZq_top 62.254866421 5.93390577156 5.71705427159 4.3847096902 3.67682369251
+tZq_antitop tZq_antitop 26.0909447861 4.80268321119 4.56560558322 3.02989678972 2.76937351813
+ratio ratio 2.37386477987 0.561298742138 0.419575471698 0.265611693891 0.132792754241

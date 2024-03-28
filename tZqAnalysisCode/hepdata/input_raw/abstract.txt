@@ -1,0 +1,17 @@
+Inclusive and differential cross sections of single top quark production in association
+with a Z boson are measured in proton-proton collisions at a center-of-mass energy
+of 13 TeV with an integrated luminosity of 138/fb recorded by the CMS experiment. 
+Events are selected based on the presence of three leptons, electrons or muons,
+associated with leptonic Z boson and top quark decays. The measurement yields
+an inclusive cross section of 87.9 +7.5-7.3 (stat) +7.3-6.0 (syst) fb for a dilepton invariant mass
+greater than 30 GeV, in agreement with standard model (SM) calculations. 
+The ratio between the cross sections for the top quark and the top antiquark production
+in association with a Z boson is measured as 2.37 +0.56-0.42 (stat) +0.27-0.13 (syst). 
+Differential measurements at parton and particle levels are performed for the first time. 
+Several kinematic observables are considered to study the modeling of the process. 
+Results are compared to theoretical predictions with different assumptions on the source
+of the initial-state b quark and found to be in agreement, within the uncertainties.
+Additionally, the spin asymmetry, which is sensitive to the top quark polarization,
+is determined from the differential distribution of the polarization angle at parton 
+level to be 0.58 +0.15-0.16 (stat) +- 0.06 (syst), in agreement with SM predictions using the
+MADGRAPH aMC@NLO event generator at next-to-leading order.
