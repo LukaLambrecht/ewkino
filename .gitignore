@@ -20,3 +20,6 @@ codeLibrary.o
 **/*output*
 **/*plots*
 **/*datacards*
+
+# bdt folders
+**/bdts_*
