@@ -84,12 +84,16 @@ for f in inputfiles:
 	colormap = {'TT': ROOT.kMagenta-7,'DY':ROOT.kMagenta+1}
 	labelmap = ({'TT':'Misid. rate prediction',
                      'DY':'Misid. rate prediction'})
+        if simtype is None:
+            labelmap = ({'TT':'t#bar{t} misid. rate prediction',
+                         'DY':'DY misid. rate prediction'})
 	legendbox = [0.5,0.5,0.92,0.9]
 	#extracmstext = '#splitline{Preliminary}{Supplementary}'
 	extracmstext = 'Simulation'
 	extrainfos = []
 	if simtype=='DY': extrainfos=['Drell-Yan simulation']
-	if simtype=='TT': extrainfos=['t#bar{t} simulation']
+	elif simtype=='TT': extrainfos=['t#bar{t} simulation']
+        elif simtype is None: extrainfos=['t#bar{t} + Drell-Yan sim.']
 	
 	hp.plotdatavsmc( os.path.join(outdir,var+'_'+figbasename), observedhist, 
 			    predictedhists, mcsysthist=predictedsyst,
