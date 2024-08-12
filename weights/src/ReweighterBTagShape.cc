@@ -88,7 +88,26 @@ ReweighterBTagShape::ReweighterBTagShape(   const std::string& weightDirectory,
 					"jesEC2_"+year, "jesEC2",
 					"jesFlavorQCD",
 					"jesHF_"+year, "jesHF",
-					"jesRelativeBal", "jesRelativeSample_"+year };
+					"jesRelativeBal", "jesRelativeSample_"+year,
+                                        // grouped JEC (split in flavor)
+                                        "jesAbsolute_"+year+std::string("_flavor0"), std::string("jesAbsolute")+"_flavor0",
+                                        "jesBBEC1_"+year+"_flavor0", std::string("jesBBEC1")+std::string("_flavor0"),
+                                        "jesEC2_"+year+"_flavor0", std::string("jesEC2")+"_flavor0",
+                                        std::string("jesFlavorQCD")+"_flavor0",
+                                        "jesHF_"+year+"_flavor0", std::string("jesHF")+"_flavor0",
+                                        std::string("jesRelativeBal")+"_flavor0", "jesRelativeSample_"+year+"_flavor0",
+                                        "jesAbsolute_"+year+"_flavor4", std::string("jesAbsolute")+"_flavor4",
+                                        "jesBBEC1_"+year+"_flavor4", std::string("jesBBEC1")+"_flavor4",
+                                        "jesEC2_"+year+"_flavor4", std::string("jesEC2")+"_flavor4",
+                                        std::string("jesFlavorQCD")+"_flavor4",
+                                        "jesHF_"+year+"_flavor4", std::string("jesHF")+"_flavor4",
+                                        std::string("jesRelativeBal")+"_flavor4", "jesRelativeSample_"+year+"_flavor4",
+                                        "jesAbsolute_"+year+"_flavor5", std::string("jesAbsolute")+"_flavor5",
+                                        "jesBBEC1_"+year+"_flavor5", std::string("jesBBEC1")+"_flavor5",
+                                        "jesEC2_"+year+"_flavor5", std::string("jesEC2")+"_flavor5",
+                                        std::string("jesFlavorQCD")+"_flavor5",
+                                        "jesHF_"+year+"_flavor5", std::string("jesHF")+"_flavor5",
+                                        std::string("jesRelativeBal")+"_flavor5", "jesRelativeSample_"+year+"_flavor5" };
     std::vector<std::string> allowedsys = {"hf","lf","hfstats1","hfstats2",
 					"lfstats1","lfstats2","cferr1","cferr2"};
     // (note: allowedsys must be a subcollection of allowedvar, excluding jec variations)
@@ -96,11 +115,12 @@ ReweighterBTagShape::ReweighterBTagShape(   const std::string& weightDirectory,
     _systematics = std::vector<std::string>();
     for( std::string variation: variations ){
 	// check if provided variation is valid
-	if( std::find(allowedvar.begin(),allowedvar.end(),variation)==allowedvar.end() ){
+	if( std::find(allowedvar.begin(),allowedvar.end(),std::string(variation))==allowedvar.end() ){
 	    throw std::invalid_argument( std::string("ERROR in ReweighterBTagShape: ")
                 + "argument 'variations' contains '" + variation + "' "
-                + "which is not recognized." );
+                + "which is not recognized..." );
 	}
+        //std::cout<<"added "<<variation<<" to be considered in the btag reweighter."<<std::endl;
 	_variations.push_back( variation );
 	// check if it is also a systematic
 	if( std::find(allowedsys.begin(),allowedsys.end(),variation)!=allowedsys.end() ){
@@ -117,7 +137,16 @@ ReweighterBTagShape::ReweighterBTagShape(   const std::string& weightDirectory,
 	for( std::string var: _variations ){
 	    _normFactors[sampleName]["up_"+var][0] = 1.;
 	    _normFactors[sampleName]["down_"+var][0] = 1.;
-	    // same as above but also normalize systematics
+	    // same as above but also normalize systematic
+	    if((var.find("jes") != std::string::npos) and (var.size()>3)) {
+              _normFactors[sampleName]["up_"+var+"_flavor0"][0] = 1.;
+              _normFactors[sampleName]["up_"+var+"_flavor4"][0] = 1.;
+              _normFactors[sampleName]["up_"+var+"_flavor5"][0] = 1.;
+
+              _normFactors[sampleName]["down_"+var+"_flavor0"][0] = 1.;
+              _normFactors[sampleName]["down_"+var+"_flavor4"][0] = 1.;
+              _normFactors[sampleName]["down_"+var+"_flavor5"][0] = 1.;
+            }
 	}
     }
  
@@ -142,13 +171,17 @@ ReweighterBTagShape::ReweighterBTagShape(   const std::string& weightDirectory,
     testmode = false;
     if( !testmode ){
 	std::cout << "reading requested scale factors from csv file..." << std::endl;
+        std::cout << stringTools::formatDirectoryName(weightDirectory)+sfFilePath << std::endl;
 	bTagSFCalibration = std::shared_ptr< BTagCalibration >( 
 	    new BTagCalibration( "", stringTools::formatDirectoryName(weightDirectory)+sfFilePath ) );
 	if( _flavor=="heavy" || _flavor=="all" ){
+            std::cout<<"heavy1 loaded"<<std::endl;
 	    bTagSFReader->load( *bTagSFCalibration, BTagEntry::FLAV_B, fitMethod );
+            std::cout<<"heavy2 loaded"<<std::endl;
 	    bTagSFReader->load( *bTagSFCalibration, BTagEntry::FLAV_C, fitMethod );
 	}
 	if( _flavor=="light" || _flavor=="all" ){
+            std::cout<<"light loaded"<<std::endl;
 	    bTagSFReader->load( *bTagSFCalibration, BTagEntry::FLAV_UDSG, fitMethod );
 	}
     }
@@ -263,10 +296,15 @@ bool ReweighterBTagShape::considerVariation( const Jet& jet,
                                 "jesPileUpDataMC", "jesPileUpPtBB", "jesPileUpPtEC1",
                                 "jesPileUpPtEC2", "jesPileUpPtHF", "jesPileUpPtRef",
                                 "jesFlavorQCD", "jesFragmentation", "jesSinglePionECAL",
-                                "jesSinglePionHCAL", "jesTimePtEta"};
+                                "jesSinglePionHCAL", "jesTimePtEta", 
+                                "jesAbsolute", "jesAbsolute_2016", "jesAbsolute_2017", "jesAbsolute_2018",
+                                "jesBBEC1","jesBBEC1_2016","jesBBEC1_2017","jesBBEC1_2018",
+                                "jesEC2","jesEC2_2016","jesEC2_2017","jesEC2_2018",
+                                "jesHF","jesHF_2016","jesHF_2017","jesHF_2018"
+                                };
     }
     for( std::string var: forbidden_variations ){
-        if( varNameClip(variation)==var ) return false;
+        if( varNameClip(variation).find(var) != std::string::npos ) return false;
     }
     return true;
 }
@@ -316,6 +354,57 @@ int ReweighterBTagShape::getNJets( const Event& event,
 int ReweighterBTagShape::getNJets( const Event& event ) const{
     // get nominal number of jets
     return this->getNJets( event, "central" );
+}
+
+double ReweighterBTagShape::getNormFactor_FlavorFilter(const Event &event, unsigned flavor, const std::string &jecVariation, const std::string& systematic_orig) const
+{
+    // get the normalization factor for an event
+    // note: the normalization factor depends on the sample to which the event belongs
+    //       and on the jet multiplicity of the event.
+    // note: jecVariation has a default value: 'nominal', i.e. no variation of JEC
+    std::string sampleName = event.sample().fileName();
+    // modify the systematic name to be recognized in the map
+    std::string flavstring = &systematic_orig.back();
+    std::string systematic = systematic_orig.substr(0,systematic_orig.length()-1);
+    systematic = systematic.append("flavor");
+    systematic = systematic.append(flavstring);
+    
+    //std::cout<<"renamed systematic to: " << systematic<<std::endl;
+    // check validity of sample to which event belongs
+    if (_normFactors.find(sampleName) == _normFactors.end())
+    {
+        throw std::invalid_argument(std::string("ERROR: ") + "ReweighterBTagShape was not initialized for this sample! " + sampleName);
+    }
+    if (_normFactors.at(sampleName).find(systematic) == _normFactors.at(sampleName).end())
+    { 
+        throw std::invalid_argument(std::string("ERROR: ") + "ReweighterBTagShape was not initialized for this systematic (in JEC flavorsplit)! " + systematic);
+    }
+    //std::cout << "normfactor" << std::endl;
+    // determine number of jets
+    int njets = 0;
+
+    if (stringTools::stringContains(jecVariation, "Up")) {
+        njets = event.jetCollection().JECGroupedFlavorQCDCollection(flavor,jecVariation.substr(0,jecVariation.length()-2),true).size();
+    } else {
+        njets = event.jetCollection().JECGroupedFlavorQCDCollection(flavor,jecVariation.substr(0,jecVariation.length()-4),false).size();
+    }
+    // retrieve the normalization factor
+    // note: if no normalization factor was initialized for this jet multiplicity,
+    //       the value for lower jet multiplicities is retrieved instead.
+    //std::cout << njets << " njets & syst " << systematic << " for jec var "<< jecVariation << std::endl;
+    //std::cout << "get out" << nLeptons << std::endl;
+    
+    for (int n = njets; n >= 0; n--)
+    {   
+        //std::cout << "get norm factor" << std::endl;
+        if (_normFactors.at(sampleName).at(systematic).find(n) != _normFactors.at(sampleName).at(systematic).end())
+        {
+            //std::cout << "found norm factor" << std::endl;
+            return _normFactors.at(sampleName).at(systematic).at(n);
+        }
+    }
+
+    throw std::invalid_argument(std::string("ERROR: ") + "ReweighterBTagShape got event for which no norm factor could be retrieved.");
 }
 
 double ReweighterBTagShape::getNormFactor( const Event& event, 
@@ -498,6 +587,61 @@ double ReweighterBTagShape::weightDown( const Event& event,
     // get down weight for event and given systematic
     return this->weight( event, "down_"+variation );
 }
+
+double ReweighterBTagShape::weightJecVar_FlavorFilter(const Event &event,
+                                         const std::string &jecVariation, unsigned long flavor) const
+{
+    // same as weight but with propagation of jec variations
+    // jecvar is expected to be of the form e.g. AbsoluteScaleUp or AbsoluteScaleDown
+    // special case JECUp and JECDown (for single variations) are also allowed
+    std::string jecVar = stringTools::removeOccurencesOf(jecVariation, "JEC");
+    std::string varName;
+    std::string jesVarName;
+    bool isup = true;
+    if (stringTools::stringEndsWith(jecVar, "Up"))
+    {
+        varName = "jes" + jecVar.substr(0, jecVar.size() - 2);
+        jesVarName = "up_" + varName + "_" + std::to_string(flavor);
+    }
+    else if (stringTools::stringEndsWith(jecVar, "Down"))
+    {
+        varName = "jes" + jecVar.substr(0, jecVar.size() - 4);
+        jesVarName = "down_" + varName + "_" + std::to_string(flavor);
+        isup = false;
+    }
+    else
+    {
+        varName = "jes" + jecVar;
+        jesVarName = "down_" + varName + "_" + std::to_string(flavor);
+    }
+    //std::cout << jecVariation << " " << flavor << std::endl;
+    if (!hasVariation(varName))
+    {
+        std::string msg = "### ERROR ### in ReweighterBTagShape::weightJecVar_FlavorFilter:";
+        msg += " jec variation '" + jecVariation + "' (corresponding to '" + varName + "') not valid";
+        std::cerr << msg << std::endl;
+        std::cerr << "returning nominal weight" << std::endl;
+        return this->weight(event, "central");
+        //throw std::invalid_argument(msg);
+    }
+    if(isup){varName = jecVar.substr(0,jecVariation.length()-2);}
+    else{varName = jecVar.substr(0,jecVariation.length()-4);}
+    double weight = 1.;
+    for (const auto &jetPtr : event.jetCollection().JECGroupedFlavorQCDCollection(flavor,varName, isup))
+    {   
+        if (jetPtr->hadronFlavor() == flavor) {
+            if (isup){
+                weight *= this->weightUp(*jetPtr,"jes" + varName);
+                }
+            else
+                weight *= this->weightDown(*jetPtr,"jes" +  varName);
+        } else {
+            weight *= this->weight(*jetPtr);
+        }
+    }
+    return weight / getNormFactor_FlavorFilter(event, flavor, jecVariation, jesVarName);
+}
+
 
 double ReweighterBTagShape::weightNoNorm( const Event& event ) const{
     // only nominal weight and no normalization factor (mainly for testing)

@@ -7,44 +7,55 @@ import os
 sys.path.append(os.path.abspath('../../jobSubmission'))
 import condorTools as ct
 from jobSettings import CMSSW_VERSION
-
+CMSSW_VERSION="~/CMSSW_10_2_16_UL3"
+sys.path.append(os.path.abspath('../../Tools/python'))
+from variabletools import read_variables
 # settings
 
 topdir = sys.argv[1]
 outputdir = sys.argv[2]
   
-years = ['2016PreVFP', '2016PostVFP', '2017', '2018']
+years = ['2016PreVFP', '2016PostVFP', '2017', '2018','run2']
 #years = ['run2']
 
 regions = ({
   'peryear': {
-    #'signalregion_dilepton_inclusive': '_eventBDT',
-    #'signalregion_trilepton': '_eventBDT',
-    'trileptoncontrolregion': '_nJetsNBJetsCat',
-    #'fourleptoncontrolregion': '_nJetsNZCat',
-    #'npcontrolregion_dilepton_inclusive': '_eventBDT',
-    #'cfjetscontrolregion': '_nJets3'
+    'signalregion_dilepton_inclusive': '_eventBDT',
+    'signalregion_trilepton': '_eventBDT',#change back here
+    'trileptoncontrolregion': '_nJetsNBJetsCat',#change back here
+    'fourleptoncontrolregion': '_nJetsNZCat',#change back here
+    'npcontrolregion_dilepton_inclusive': '_eventBDT',#change back here
+    'cfjetscontrolregion': '_nJets'#change back here
   },
-  #'perchannel': {
-  #  'signalregion_dilepton_ee': '_eventBDT',
-  #  'signalregion_dilepton_em': '_eventBDT',
-  #  'signalregion_dilepton_me': '_eventBDT',
-  #  'signalregion_dilepton_mm': '_eventBDT',
-  #  'signalregion_trilepton': '_eventBDT',
-  #  'trileptoncontrolregion': '_nJetsNBJetsCat',
-  #  'fourleptoncontrolregion': '_nJetsNZCat',
-  #  'npcontrolregion_dilepton_inclusive': '_eventBDT',
-  #  'cfjetscontrolregion': '_nJets3' 
-  #},
-  #'persign': {
-  #  'signalregion_dilepton_plus': '_eventBDT',
-  #  'signalregion_dilepton_minus': '_eventBDT',
-  #  'signalregion_trilepton': '_eventBDT',
-  #  'trileptoncontrolregion': '_nJetsNBJetsCat',
-  #  'fourleptoncontrolregion': '_nJetsNZCat',
-  #  'npcontrolregion_dilepton_inclusive': '_eventBDT',
-  #  'cfjetscontrolregion': '_nJets3'
-  #}
+  'perchannel': {
+    'signalregion_dilepton_ee': '_eventBDT',
+    'signalregion_dilepton_em': '_eventBDT',
+    'signalregion_dilepton_me': '_eventBDT',
+    'signalregion_dilepton_mm': '_eventBDT',
+    'signalregion_trilepton': '_eventBDT',
+    'trileptoncontrolregion': '_nJetsNBJetsCat',
+    'fourleptoncontrolregion': '_nJetsNZCat',
+    #'npcontrolregion_dilepton_mm': '_eventBDT',
+    #'npcontrolregion_dilepton_me': '_eventBDT',
+    #'npcontrolregion_dilepton_em': '_eventBDT',
+    #'npcontrolregion_dilepton_ee': '_eventBDT',
+    'npcontrolregion_dilepton_inclusive': '_eventBDT',
+    'cfjetscontrolregion': '_nJets' 
+  },
+  'persign': {
+    'signalregion_dilepton_plus': '_eventBDT',
+    'signalregion_dilepton_minus': '_eventBDT',
+    'signalregion_trilepton': '_eventBDT',
+    'trileptoncontrolregion': '_nJetsNBJetsCat',
+    'fourleptoncontrolregion': '_nJetsNZCat',
+    #'npcontrolregion_dilepton_mm': '_eventBDT',
+    #'npcontrolregion_dilepton_me': '_eventBDT',
+    #'npcontrolregion_dilepton_em': '_eventBDT',
+    #'npcontrolregion_dilepton_ee': '_eventBDT',
+    'npcontrolregion_dilepton_inclusive': '_eventBDT',
+    'cfjetscontrolregion': '_nJets'
+  }
+
 })
   
 inputfiletag = 'merged_npfromdatasplit_cffromdata/merged.root'
@@ -61,15 +72,26 @@ runmode = 'condor'
 cmds = []
 for year in years:
   for configtag, config in regions.items():
+    if configtag == 'peryear' and year=='run2': continue
+    if configtag != 'peryear' and year!='run2': continue
     thiscmds = []
     thisoutputdir = outputdir + '_{}'.format(configtag)
-    for region,variable in config.items():
+    region = 'signalregion_dilepton_inclusive'
+    #variables = read_variables( '../variables/variables_inputfeatures.json' )#changed here
+    #variables = [str(var.name) for var in variables] 
+    #for variable in variables:
+    for region,variable in config.items():#change back here
       # find input file
       inputfile = os.path.join(topdir,year,region,inputfiletag)
+      if 'signalregion_tri' in region:
+        inputfile = inputfile.replace('.root','_rebinned.root')
+      if 'npcontrolregion' in region and not 'inclusive' in region:
+        print("rebin np region")
+        inputfile = inputfile.replace('.root','_rebinned_lastbins.root')
       if not os.path.exists(inputfile):
         raise Exception('ERROR: file {} does not exist.'.format(inputfile))
       # define output file
-      outputfiletag = '{}_{}'.format(region,year)
+      outputfiletag = '{}_{}'.format(region,year)# region and variable replaced
       outputfiletag = os.path.join(thisoutputdir, outputfiletag)
       # make command
       cmd = 'python makedatacard.py'
@@ -78,6 +100,7 @@ for year in years:
       cmd += ' --region {}'.format(region)
       cmd += ' --variable {}'.format(variable)
       cmd += ' --outputfile {}'.format(outputfiletag)
+      #cmd += ' --excludetags {}'.format("Nonprompt")
       cmd += ' --processes all'
       cmd += ' --signals {}'.format(','.join(signals))
       cmd += ' --datatag Data'

@@ -28,14 +28,15 @@ Closure test for b-tagging normalization
 // include dedicated tools
 #include "interface/bTaggingTools.h"
 
-void closureTest(
+void closureTestPlot(
 	const std::string& inputDirectory,
 	const std::string& sampleList,
 	int sampleIndex,
 	unsigned long nEvents,
 	const std::string& txtInputDirectory,
 	const std::vector<std::string>& event_selections,
-	const std::vector<std::string>& variations ){
+	const std::vector<std::string>& variations,
+        const std::string& outputDirectory ){
     
     // initialize TreeReader from input file
     std::cout<<"initializing TreeReader and setting to sample n. "<<sampleIndex<<std::endl;
@@ -52,14 +53,16 @@ void closureTest(
 
     // read txt file with normalization factors
     std::string txtInputFile = stringTools::formatDirectoryName( txtInputDirectory );
-    txtInputFile += stringTools::replace(inputFileName, ".root", ".txt");
-    std::cout<<txtInputFile<<std::endl;
+    std::string findstr = ".root";
+    std::string replacestr = ".txt";
+    txtInputFile += inputFileName.replace(inputFileName.find(".root"),findstr.length(),replacestr);
     std::map< std::string, std::map< std::string, std::map< int, double >>> weightMap;
     std::vector<std::string> variationsToRead = {"central"};
     for( std::string var: variations ){ 
 	variationsToRead.push_back("up_"+var);
 	variationsToRead.push_back("down_"+var);
     }
+    std::cout<<txtInputFile;
     weightMap = bTaggingTools::textToMap( txtInputFile, event_selections, variationsToRead );
 
     // make the b-tag shape reweighter
@@ -78,7 +81,7 @@ void closureTest(
         weightDirectory, sfFilePath, flavor, bTagAlgo, variations, samples );
 
     // initialize the output maps
-    std::map< std::string, std::map< std::string, std::map< int, double >>> averageOfWeights;
+    /*std::map< std::string, std::map< std::string, std::map< int, double >>> averageOfWeights;
     std::map< std::string, std::map<std::string, std::map< int, int >>> nEntries;
     for( std::string es: event_selections ){
 	averageOfWeights[es]["central"][0] = 0.;
@@ -89,7 +92,44 @@ void closureTest(
 	    nEntries[es]["up_"+var][0] = 0;
 	    nEntries[es]["down_"+var][0] = 0;
 	}
-    }
+    }*/
+    
+
+    //make output tree structure
+    std::string outputdir = "blackJackAndHookers";
+    std::string treename = "blackJackAndHookersTree";
+    std::string outputFilePath = stringTools::formatDirectoryName( outputDirectory );          //TDB
+    outputFilePath += inputFileName.replace(inputFileName.find(".txt"),replacestr.length(),findstr);                                                           //TBD
+    TFile* outputFilePtr = TFile::Open( outputFilePath.c_str() , "RECREATE" );
+
+    outputFilePtr->mkdir( outputdir.c_str() );
+    outputFilePtr->cd( outputdir.c_str() );
+    std::shared_ptr< TTree > outputTree( std::make_shared< TTree >(
+                                            treename.c_str(), treename.c_str() ) );
+
+    Float_t _weight = 0; // generator weight scaled by cross section and lumi
+    Float_t _nonormreweight = 0; // total weight, including reweighting and fake rate
+    Float_t _reweight = 1; // total reweighting factor
+    Float_t _HT = 0;
+    Float_t _nJets = 0;
+    Float_t _jetPtLeading = 0.;
+    Float_t _jetPtSubLeading = 0.;
+    Float_t _Mjj_max = 0;
+    Float_t _pTjj_max = 0;
+    Float_t _dRl1jet = 99.;
+
+
+    outputTree.get()->Branch("_weight", &_weight, "_weight/F");
+    outputTree.get()->Branch("_nonormreweight", &_nonormreweight, "_nonormreweight/F");
+    outputTree.get()->Branch("_reweight", &_reweight, "_reweight/F");
+    outputTree.get()->Branch("_HT", &_HT, "_HT/F");
+    outputTree.get()->Branch("_nJets", &_nJets, "_nJets/F");
+    outputTree->Branch("_jetPtLeading", &_jetPtLeading, "_jetPtLeading/F");
+    outputTree->Branch("_jetPtSubLeading", &_jetPtSubLeading, "_jetPtSubLeading/F");
+    outputTree->Branch("_dRl1jet", &_dRl1jet, "_dRl1jet/F");
+    outputTree->Branch("_Mjj_max", &_Mjj_max, "_Mjj_max/F");
+    outputTree->Branch("_pTjj_max", &_pTjj_max, "_pTjj_max/F");
+
 
     // determine number of entries to run over
     long unsigned numberOfEntries = treeReader.numberOfEntries();
@@ -108,86 +148,58 @@ void closureTest(
 	
 	// build event
 	Event event = treeReader.buildEvent(entry, false, false, false, true);
-        
+        _Mjj_max = 0;
+        _pTjj_max = 0;
+        _dRl1jet = 99.;    
 	// loop over event selections
 	for(std::string es: event_selections){
-	    if(!passES(event, es, "tight", "nominal", true)) continue;
+	    if(!passES(event, es, "tight", "nominal", false)) continue;      // event selection without the bjet selection
 
 	    // set  the correct normalization
 	    reweighterBTagShape->setNormFactors( sample, weightMap[es] );
 
 	    // add nominal b-tag reweighting factors
-	    double btagreweight = reweighterBTagShape->weight( event );
-	    int njets = reweighterBTagShape->getNJets( event );
-	    if( nEntries.at(es).at("central").find(njets)==nEntries.at(es).at("central").end() ){
-		averageOfWeights.at(es).at("central")[njets] = btagreweight;
-		nEntries.at(es).at("central")[njets] = 1;
-	    } else{
-		averageOfWeights.at(es).at("central").at(njets) += btagreweight;
-		nEntries.at(es).at("central").at(njets) += 1;
-	    }
+	    _reweight = reweighterBTagShape->weight( event );
+            _nonormreweight = reweighterBTagShape->weightNoNorm( event );
+            _weight = event.weight();
+            JetCollection jetcollection = event.getJetCollection("nominal");
+            LeptonCollection lepcollection = event.leptonCollection();
 
-	    // add varied b-tag reweighting factors
-	    for( std::string var: variations ){ 
-		// get up weight
-		double btagup = reweighterBTagShape->weightUp(event, var);
-		int njetsup = reweighterBTagShape->getNJets(event, "up_"+var);
-		if( nEntries.at(es).at("up_"+var).find(njetsup)==nEntries.at(es).at("up_"+var).end() ){
-		    averageOfWeights.at(es).at("up_"+var)[njetsup] = btagup;
-		    nEntries.at(es).at("up_"+var)[njetsup] = 1;
-		} else{
-		    averageOfWeights.at(es).at("up_"+var).at(njetsup) += btagup;
-		    nEntries.at(es).at("up_"+var).at(njetsup) += 1;
-		}
-		// get down weight
-		double btagdown = reweighterBTagShape->weightDown(event, var);
-		int njetsdown = reweighterBTagShape->getNJets(event, "down_"+var);
-		if( nEntries.at(es).at("down_"+var).find(njetsdown)==nEntries.at(es).at("down_"+var).end() ){
-		    averageOfWeights.at(es).at("down_"+var)[njetsdown] = btagdown;
-		    nEntries.at(es).at("down_"+var)[njetsdown] = 1;
-		} else{
-		    averageOfWeights.at(es).at("down_"+var).at(njetsdown) += btagdown;
-		    nEntries.at(es).at("down_"+var).at(njetsdown) += 1;
-		}
-	    } // end loop over variations
+            _HT = jetcollection.scalarPtSum();
+            _nJets = jetcollection.size();
+            for(JetCollection::const_iterator jIt = jetcollection.cbegin();
+              jIt != jetcollection.cend(); jIt++){
+              Jet& jet = **jIt;
+              if(deltaR(lepcollection[0],jet)<_dRl1jet) _dRl1jet = deltaR(lepcollection[0],jet);
+            }
+            jetcollection.sortByPt();
+            _jetPtLeading = jetcollection[0].pt();
+            _jetPtSubLeading = jetcollection[1].pt();
+
+            for(JetCollection::const_iterator jIt = jetcollection.cbegin();
+                jIt != jetcollection.cend(); jIt++){
+                Jet& jet = **jIt;
+                for(JetCollection::const_iterator jIt2 = jIt+1; jIt2 != jetcollection.cend(); jIt2++){
+                    Jet& jet2 = **jIt2;
+                    if((jet+jet2).mass()>_Mjj_max) _Mjj_max = (jet+jet2).mass();
+                    if((jet+jet2).pt() >_pTjj_max) _pTjj_max = (jet+jet2).pt();
+                }
+            }
+    
+ 
+            outputTree->Fill();
 	} // end loop over event selections
     } // end loop over events
-
-    // divide sum by number to get average
-    for( std::string es: event_selections ){
-	for( std::map<int,int>::iterator it = nEntries.at(es).at("central").begin(); 
-	    it != nEntries.at(es).at("central").end(); ++it ){
-	    averageOfWeights.at(es).at("central").at(it->first) /= it->second;
-	    if( it->second==0 ){ averageOfWeights.at(es).at("central").at(it->first) = 1; }
-	}
-	for( std::string var: variations ){
-	    for( std::map<int,int>::iterator it = nEntries.at(es).at("up_"+var).begin(); 
-		it != nEntries.at(es).at("up_"+var).end(); ++it ){
-		averageOfWeights.at(es).at("up_"+var).at(it->first) /= it->second;
-		if( it->second==0 ){ averageOfWeights.at(es).at("up_"+var).at(it->first) = 1; }
-	    }
-	    for( std::map<int,int>::iterator it = nEntries.at(es).at("down_"+var).begin();
-		it != nEntries.at(es).at("down_"+var).end(); ++it ){
-		averageOfWeights.at(es).at("down_"+var).at(it->first) /= it->second;
-		if( it->second==0 ){ averageOfWeights.at(es).at("down_"+var).at(it->first) = 1; }
-	    }
-	}
-    }
-
-    // print output
-    std::vector<std::string> lines = bTaggingTools::mapToText(averageOfWeights);
-    std::cout << "Results of closure test:" << std::endl;
-    for( std::string line: lines ){
-	std::cout << line << std::endl;
-    }
+    outputFilePtr->cd( outputdir.c_str() );
+    outputTree->Write("", BIT(2) );
+    outputFilePtr->Close();
 }
-
 
 int main( int argc, char* argv[] ){
 
     std::cerr << "###starting###" << std::endl;
 
-    if( argc != 8 ){
+    if( argc != 9 ){
 	std::cerr << "ERROR: need following command line arguments:" << std::endl;
         std::cerr << " - input directory" << std::endl;
         std::cerr << " - sample list" << std::endl;
@@ -196,6 +208,7 @@ int main( int argc, char* argv[] ){
         std::cerr << " - event selections" << std::endl;
         std::cerr << " - variations" << std::endl;
 	std::cerr << " - number of events" << std::endl;
+        std::cerr << " - output directory" << std::endl;
         return -1;
     }
 
@@ -211,6 +224,7 @@ int main( int argc, char* argv[] ){
     std::vector<std::string> variations;
     if( variation!="none" ) variations = stringTools::split(variation,",");
     unsigned long nevents = std::stoul(argvStr[7]);
+    std::string& output_directory = argvStr[8];
 
     // print arguments
     std::cout << "Found following arguments:" << std::endl;
@@ -221,11 +235,13 @@ int main( int argc, char* argv[] ){
     std::cout << "  - event selection: " << event_selection << std::endl;
     std::cout << "  - variation: " << variation << std::endl;
     std::cout << "  - number of events: " << std::to_string(nevents) << std::endl;
+    std::cout << "  - output directory: " << output_directory << std::endl;
 
     // fill the histograms
-    closureTest( input_directory, sample_list, sample_index, nevents,
+    closureTestPlot( input_directory, sample_list, sample_index, nevents,
 		    txt_input_directory,
-		    event_selections, variations );
+		    event_selections, variations, output_directory );
+
     std::cerr << "###done###" << std::endl;
     return 0;
 }

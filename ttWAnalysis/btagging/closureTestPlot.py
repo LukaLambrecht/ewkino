@@ -27,6 +27,7 @@ if __name__=='__main__':
   parser.add_argument('--samplelist', required=True, type=os.path.abspath)
   parser.add_argument('--txtinputdir', required=True, type=os.path.abspath)
   parser.add_argument('--event_selection', required=True, choices=event_selections, nargs='+')
+  parser.add_argument('--outputdir', required=True, type=os.path.abspath)
   parser.add_argument('--nevents', default=0, type=int)
   parser.add_argument('--runmode', default='condor', choices=['condor','local'])
   args = parser.parse_args()
@@ -46,7 +47,7 @@ if __name__=='__main__':
   event_selections = '+'.join(args.event_selection)
 
   # check if executable is present
-  exe = './closureTest'
+  exe = './closureTestPlot'
   if not os.path.exists(exe):
     raise Exception('ERROR: {} executable was not found.'.format(exe))
 
@@ -60,18 +61,16 @@ if __name__=='__main__':
   # parse variations
   btagyear = year_from_samplelist(args.samplelist)
   if( btagyear=='2016PreVFP' or btagyear=='2016PostVFP' ): btagyear = '2016'
-  variations = get_variations(btagyear)
-
-  variations = [var for var in variations if not "flavor" in var]
+  variations = ','.join(get_variations(btagyear))
 
   # loop over input files and submit jobs
   commands = []
   for i in range(nsamples):
     # make the command
-    command = exe + ' {} {} {} {} {} {} {}'.format(
+    command = exe + ' {} {} {} {} {} {} {} {}'.format(
                     args.inputdir, args.samplelist, i, args.txtinputdir,
-                    event_selections, ','.join(variations),
-                    args.nevents )
+                    event_selections, variations,
+                    args.nevents, args.outputdir )
     print(command)
     commands.append(command)
 

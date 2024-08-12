@@ -35,6 +35,7 @@ def cleandatacarddir(datacarddir, rmtxt=True, rmroot=True, force=False):
     msg += 'Clean it? (y/n)'
     print(msg)
     go = raw_input()
+    #go = input()
     if not go=='y': return False
   # remove the files and folders
   for f in filestorm: os.system('rm -r {}'.format(f))
@@ -203,7 +204,7 @@ def get_fitdiagnostics_commands(datacarddir, card,
   ss_command += ' --plots' 
   # (for covariance matrix)
   ss_command += ' --cminDefaultMinimizerStrategy 0'
-  #ss_command += ' --robustFit=1'
+  ss_command += ' --robustFit=1'
   if defaultpoi: ss_command += ' --rMin 0 --rMax 5'
   else: 
     ss_command += ' --redefineSignalPOIs {}'.format(pois[0])
@@ -264,8 +265,8 @@ def get_multidimfit_commands(datacarddir, card,
   ss_command += ' -n '+name
   ss_command += ' --algo singles --saveWorkspace --saveFitResult'
   ss_command += ' --cminDefaultMinimizerStrategy 0'
-  #ss_command += ' --robustFit=1'
-  if defaultpoi: ss_command += ' --rMin 0 --rMax 5'
+  ss_command += ' --robustFit=1'
+  if defaultpoi: ss_command += ' --rMin 0 --rMax 3'
   else:
     ss_command += ' --redefineSignalPOIs {}'.format(pois[0])
     for poi in pois[1:]: ss_command += ',{}'.format(poi)
@@ -323,7 +324,7 @@ def get_initimpacts_commands( datacarddir, card,
   ss_command += ' -m 120'
   ss_command += ' --saveWorkspace'
   ss_command += ' --cminDefaultMinimizerStrategy 0'
-  #ss_command += ' --robustFit=1'
+  ss_command += ' --robustFit=1'
   if defaultpoi: ss_command += ' --rMin 0 --rMax 5'
   else:
     ss_command += ' --redefineSignalPOIs {}'.format(pois[0])
@@ -510,7 +511,7 @@ def get_impacts_commands( datacarddir, card,
   command = 'combineTool.py -M Impacts -d '+absworkspace
   command += ' -m 100'
   command += ' --rMin 0 --rMax 5'
-  #command += ' --cminDefaultMinimizerStrategy 0'
+  command += ' --cminDefaultMinimizerStrategy 0'
   command += ' --robustFit=1'
   if not (defaultpoi or autopoi): command += ' --redefineSignalPOIs {}'.format(','.join(pois))
   if( not usedata and expectsignal ): command += ' -t -1 --expectSignal 1'

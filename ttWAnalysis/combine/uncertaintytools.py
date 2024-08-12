@@ -49,9 +49,10 @@ def get_systematics_to_disable( processes, pnonorm=None,
   rmforall.append('rfScales*')
   #rmforall.append('qcdScales*')
 
-  # remove overlap between pdf envelope types
+  # remove overlap between pdf and qcdscale envelope types (you have to choose between ShapeEnv/RMS and ShapeVar)
   rmforall.append('pdfShapeEnv*')
-  #rmforall.append('pdfShapeRMS*')
+  rmforall.append('pdfShapeRMS*')
+  rmforall.append('qcdScalesShapeEnv*')
 
   # remove norm uncertainties for specified processes
   if pnonorm is not None:
@@ -71,31 +72,47 @@ def get_systematics_to_disable( processes, pnonorm=None,
     rmspecific[p].append('njets*')
     rmspecific[p].append('nbjets*')
 
-  # remove nonprompt shape uncertainties for all but nonprompt
+  # remove nonprompt shape uncertainties for all but nonprompt NOTE ADDED nonprompt pdf as this is not propagated correctly, same for ZZ!!!
   for p in processes:
-    if( p=='Nonprompt' or p=='NonpromptE' or p=='NonpromptMu' ): continue
-    rmspecific[p].append('efakerate*')
-    rmspecific[p].append('mfakerate*')
+    if( p=='Nonprompt' or p=='NonpromptE' or p=='NonpromptMu' ): 
+      rmspecific[p].append('qcdScalesShapeVar*')
+      rmspecific[p].append('pdfShapeVar*')
+    else:
+      rmspecific[p].append('efakerate*')
+      rmspecific[p].append('mfakerate*')
+    if ( p=='ZZ' or p=='TX' or p=='Multiboson'):
+      rmspecific[p].append('pdfShapeVar*')
 
   # remove specific nJets uncertainty except for chargeflips
   # (also remove for chargeflips since it was not yet correctly initialized)
-  rmforall.append('njetscf*')
+  #rmforall.append('njetscf*')
 
   # remove individual qcd and pdf variations
   # (if not done so before)
-  rmforall.append('qcdScalesShapeVar*')
-  rmforall.append('pdfShapeVar*')
+  #rmforall.append('qcdScalesShapeVar*')
+  #rmforall.append('pdfShapeVar*')
 
   # remove overlap between JEC sources
-  #rmforall.append('JEC')
-  rmforall.append('JECGrouped*')
+  rmforall.append('JEC')
+
+  #rmforall.append('JECGrouped*')
+  rmforall.append('JECGrouped_FlavorQCD*')
   rmforall.append('JECGrouped_Total*')
+
+  rmforall.append('JECFlavor_HF*')
+  rmforall.append('JECFlavor_EC2*')
+  rmforall.append('JECFlavor_BBEC1*')
+  rmforall.append('JECFlavor_Absolute*')
+  #rmforall.append('JECFlavor_FlavorQCD*')
+  rmforall.append('JECFlavor_Relative*')
+  rmforall.append('JECFlavor*_Total*')
 
   # remove grouped JEC sources for nonprompt
   # (they are not yet correctly initialized)
   # (now commented out since will use single JEC for now)
   for p in ['Nonprompt', 'NonpromptMu', 'NonpromptE']:
     if p in processes: rmspecific[p].append('JECGrouped*')
+    if p in processes: rmspecific[p].append('JECFlavor*')
 
   # remove fsrShape for WZ
   # (gives unresolved strange behaviour in latest iteration)
@@ -132,7 +149,7 @@ def remove_systematics_default( processinfo, year=None, region=None ):
 
   # define processes for which normalization systematics should be removed
   # (because they will get dedicated normalization uncertainties later on)
-  pnonorm = ['WZ','ZZ','TTZ','TTG','ZG','Multiboson']
+  pnonorm = ['WZ','ZZ','TTZ','TTG','ZG']#,'Multiboson']#multiboson removed
   pnonorm += ['TTH']
   pnonorm += ['TX', 'TTX']
   if 'Nonprompt' in processinfo.plist: pnonorm.append('Nonprompt')
@@ -215,7 +232,7 @@ def add_systematics_default( processinfo, year=None ):
     'ZG': 1.3, # synced with Oviedo (?)
     'TTG': 1.3, # synced with Oviedo (?)
     'TTH': 1.1, # synced with Oviedo (?)
-    'Multiboson': 1.5, # synced with Oviedo (?)
+    #'Multiboson': 1.5, # synced with Oviedo (?)
     'TTX': 1.5, # for future iterations
     'TX': 1.5, # for future iterations
   })

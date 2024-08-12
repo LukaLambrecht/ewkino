@@ -7,14 +7,14 @@ if __name__=='__main__':
   inputdir = sys.argv[1]
   ssdirbase = sys.argv[2]
 
-  regions = {'signalregion_dilepton_inclusive': ssdirbase + 'dilepton', 
-             'signalregion_trilepton': ssdirbase + 'trilepton'}
+  regions = {'signalregion_dilepton_inclusive': ssdirbase}# + 'dilepton', 
+  #           'signalregion_trilepton': ssdirbase + 'trilepton'}
   variables = '../variables/variables_particlelevel_single.json'
   writeuncs = False
   write_roots = False
 
   # basic command
-  basiccmd = 'python plotdifferential.py --year run2 --processes TTW2018'
+  basiccmd = 'python plotdifferential.py --year run2 --processes TTW'
   basiccmd += ' --variables {}'.format(variables)
 
   # loop over configurations

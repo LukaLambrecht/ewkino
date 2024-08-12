@@ -19,8 +19,8 @@ if __name__=='__main__':
   args = parser.parse_args()
 
   # fixed arguments
-  xaxbins = '0.6,1.4,30'
-  yaxbins = '0.6,1.4,30'
+  xaxbins = '0.5,1.5,30'
+  yaxbins = '0.5,1.5,30'
 
   # find suitable input files in directory
   inputfiles = [f for f in os.listdir(args.datacarddir)
@@ -36,5 +36,8 @@ if __name__=='__main__':
     cmd += ' --outputfile {}'.format(outputfile)
     cmd += ' --xaxbins {}'.format(xaxbins)
     cmd += ' --yaxbins {}'.format(yaxbins)
+
+    cmd += ' --addinclusiveresult'
+    #cmd += ' --datacarddir {}'.format(args.datacarddir)
     # run the command
     os.system(cmd)
