@@ -206,10 +206,11 @@ def drawLumi(pad,
     latex.SetTextFont(52);
     latex.SetTextSize(extraTextSize);
     latex.SetTextAlign(11);
-    if not cms_in_grid: latex.DrawLatex(lmargin+0.03 + 1.2*cmsX,
-                        1-tmargin+CMSTextVerticalOffset, extratext);
-    else: latex.DrawLatex(lmargin+0.03 + 1.2*cmsX,
-            1-tmargin-CMSTextVerticalOffset-CMSTextSize, extratext);
+    if extratext is not None and extratext!='':
+        if not cms_in_grid: latex.DrawLatex(lmargin+0.03 + 1.2*cmsX,
+                              1-tmargin+CMSTextVerticalOffset, extratext);
+        else: latex.DrawLatex(lmargin+0.03 + 1.2*cmsX,
+                1-tmargin-CMSTextVerticalOffset-CMSTextSize, extratext);
 
     latex.SetTextFont(42);
     latex.SetTextAlign(31);

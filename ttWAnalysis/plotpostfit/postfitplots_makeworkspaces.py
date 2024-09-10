@@ -117,12 +117,14 @@ def make_workspaces( channels, variables, outputdir, workspacename,
       signals=signals, adddata=adddata, datatag=datatag,
       rawsystematics=rawsystematics, dummysystematics=dummysystematics,
       verbose=verbose )
+    normsystematics = {}
+    for normsys in normsyslist: normsystematics[normsys] = 'lnU'
 
     # write the datacard
     print('Writing full datacard...')
     writedatacard( outputdir, name, PIC,
                  path, variable,
-                 shapesyslist=shapesyslist, lnnsyslist=normsyslist,
+                 shapesyslist=shapesyslist, normsystematics=normsystematics,
                  rateparamlist=[], ratio=[],
                  automcstats=10,
                  writeobs=False,
@@ -138,7 +140,7 @@ def make_workspaces( channels, variables, outputdir, workspacename,
       print('Writing statistics-only datacard...')
       writedatacard( outputdir, name, PIC,
                  path, variable,
-                 shapesyslist=[], lnnsyslist=[],
+                 shapesyslist=[], normsystematics=normsystematics,
                  rateparamlist=[], ratio=[],
                  automcstats=10,
                  writeobs=False,

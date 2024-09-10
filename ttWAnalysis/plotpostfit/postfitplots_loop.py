@@ -1,18 +1,36 @@
 ####################################################################################
 # Submitter that runs postfitplots.py for a number of predefined regions and years #
 ####################################################################################
+# Note: this is just a utility script that depends heavily on custom workflows
+#       and naming conventions; it will need to be replaced in different environments.
+#       But the gist is to simply gather the inputs for postfitplots.py
+#       in a convenient way.
 
-import sys
+# import external modules
 import os
+import sys
 import json
-sys.path.append('../../jobSubmission')
+
+# import job submission tools
+sys.path.append(os.path.abspath('../../jobSubmission'))
 import condorTools as ct
-from jobSettings import CMSSW_VERSION
-CMSSW_VERSION = '~/CMSSW_10_2_13_combine/CMSSW_10_2_13'
+CMSSW_VERSION = '~/CMSSW_10_2_X_combine/CMSSW_10_2_13'
 
+# input arguments
 inputdir = os.path.abspath(sys.argv[1])
-runmode = 'local'
 
+# general settings
+runmode = 'local'
+dolog = True
+regroup_processes = True
+unblind = True
+variables = '../variables/variables_eventbdt.json'
+colormap = 'ttw'
+signals = ['TTW']
+outputdirname = 'output_test'
+confdir = 'output_test_confs'
+
+# define regions to run over
 regions = []
 for r in ['signalregion_dilepton_inclusive']: regions.append(r)
 #for r in ['signalregion_trilepton']: regions.append(r)
@@ -21,33 +39,20 @@ for r in ['signalregion_dilepton_inclusive']: regions.append(r)
 #for r in ['npcontrolregion_dilepton_inclusive']: regions.append(r)
 #for r in ['cfcontrolregion']: regions.append(r)
 
+# define years to run over
 years = []
 #years = ['2016PreVFP','2016PostVFP','2017','2018']
-years = ['2016PreVFP']
+years = ['2018']
 #years.append('run2')
 
-npmode = 'npfromdatasplit'
-cfmode = 'cffromdata'
-
-dolog = True
-
+# define variables to run over
 variables = '../variables/variables_eventbdt.json'
 
-colormap = 'ttw'
-
-signals = ['TTW']
-
-regroup_processes = True
-
-unblind = True
-
+# further settings to find back the correct input files
+npmode = 'npfromdatasplit'
+cfmode = 'cffromdata'
 filemode = 'split'
-
 datatag = 'Data'
-
-outputdirname = 'output_test'
-
-confdir = 'postfitplots_confs'
 
 # make configuration directory
 if not os.path.exists(confdir): os.makedirs(confdir)

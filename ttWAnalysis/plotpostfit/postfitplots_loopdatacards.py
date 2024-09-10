@@ -1,7 +1,6 @@
 ##############################
 # Looper for postfitplots.py #
 ##############################
-
 # Use case: make postfit (and prefit) plots of all datacards in a directory.
 # Note: this is similar to plotdatacards/datacardplots_loop.py,
 #       but including postfit plots instead of only prefit plots.
@@ -10,6 +9,7 @@
 #       (contrary to postfitplots_loop.py).
 
 
+# import external modules
 import os
 import sys
 import argparse
@@ -19,11 +19,14 @@ if __name__=='__main__':
 
     # parse arguments
     parser = argparse.ArgumentParser(description='Make postfit plots')
-    parser.add_argument('-d', '--datacarddir', required=True, type=os.path.abspath)
-    parser.add_argument('-o', '--outputdir', required=True, type=os.path.abspath)
-    parser.add_argument('-f', '--fitresultfile', default=None)
+    parser.add_argument('-d', '--datacarddir', required=True, type=os.path.abspath,
+                        help='Directory with datacards and corresponding workspaces to plot.')
+    parser.add_argument('-o', '--outputdir', required=True, type=os.path.abspath,
+                        help='Output directory where plots will be put.')
+    parser.add_argument('-f', '--fitresultfile', default=None,
+                        help='Fit result file (if None, prefit plots will be made).')
     parser.add_argument('-v', '--variables', default=None,
-                        help='Path to json file holding variable definition.')
+                        help='Path to json file holding variable definitions.')
     parser.add_argument('--colormap', default=None,
                         help='Name of the color map to use.')
     parser.add_argument('--signals', default=None,
@@ -50,16 +53,22 @@ if __name__=='__main__':
         # find workspace
         workspace = datacard.replace('.txt', '.root')
         if not os.path.exists(workspace):
+            # try to make it
+            cmd = 'text2workspace.py {} -o {}'.format(datacard, workspace)
+            os.system(cmd)
+        if not os.path.exists(workspace):
             raise Exception('ERROR: workspace {} does not exist.'.format(workspace))
 
         # find fit result file
         dopostfit = False
         if args.fitresultfile is not None:
             dopostfit = True
+            # baseline: git fit result file provided by user
             fitresultfile = args.fitresultfile
+            # special case: find correct fit result file automatically
             if args.fitresultfile=='multidimfit':
-                fitresultfile = os.path.join(args.datacarddir,
-                  'multidimfit' + os.path.basename(datacard).replace('.txt', '_out_multidimfit_obs.root'))
+                tag = os.path.basename(datacard).replace('.txt', '_out_multidimfit_obs.root')
+                fitresultfile = os.path.join(args.datacarddir, 'multidimfit' + tag)
                 msg = 'INFO: using automatic fit result file {} for datacard {}'.format(fitresultfile, datacard)
                 print(msg)
             elif args.fitresultfile=='fitdiagnostics': pass # to do

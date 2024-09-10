@@ -8,20 +8,32 @@
 # The naming of the histograms should be <process name>_<variable name>_<systematic>
 # where the systematic is either "nominal" or a systematic name followed by "Up" or "Down".
 
-import sys
+# Run with `python postfitplots.py -h` (or `python3 postfitplots.py -h`)
+# for a list of command-line options.
+
+# import external modules
 import os
-import json
+import sys
 import ROOT
 import math
 import argparse
+
+# import general tools
+# (for dealing with lists of TH1s, cmdline args, histogram variables, etc.)
 sys.path.append(os.path.abspath('../../Tools/python'))
 import histtools as ht
 import listtools as lt
 import argparsetools as apt
-from variabletools import read_variables, write_variables_json
+from variabletools import read_variables
 from variabletools import DoubleHistogramVariable
-sys.path.append(os.path.abspath('../../plotting/python'))
+
+# import the actual plotting function
+# (i.e. the actual plotting function)
 import histplotter as hp
+
+# import local tools
+# (for definition of colors, extra info displays, grouping of processes, etc.)
+sys.path.append(os.path.abspath('../plotting'))
 import colors
 import infodicts
 import regroupdicts
