@@ -8,10 +8,10 @@ import sys
 import ROOT
 import json
 import numpy as np
-sys.path.append(os.path.abspath('../../plotting/python'))
-import plottools as pt
 sys.path.append(os.path.abspath('../../Tools/python'))
 import histtools as ht
+sys.path.append(os.path.abspath('./tools'))
+import plottools as pt
 
 
 # help functions

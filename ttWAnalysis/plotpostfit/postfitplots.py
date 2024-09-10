@@ -19,10 +19,9 @@ import math
 import argparse
 
 # import general tools
-# (for dealing with lists of TH1s, cmdline args, histogram variables, etc.)
+# (for dealing with cmdline args, histogram variables, etc.)
 sys.path.append(os.path.abspath('../../Tools/python'))
 import histtools as ht
-import listtools as lt
 import argparsetools as apt
 from variabletools import read_variables
 from variabletools import DoubleHistogramVariable
@@ -31,7 +30,7 @@ from variabletools import DoubleHistogramVariable
 # (i.e. the actual plotting function)
 import histplotter as hp
 
-# import local tools
+# import local tools for plot aesthetics
 # (for definition of colors, extra info displays, grouping of processes, etc.)
 sys.path.append(os.path.abspath('../plotting'))
 import colors
